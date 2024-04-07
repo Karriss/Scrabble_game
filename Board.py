@@ -9,10 +9,7 @@ class Board:
     def getBoard(self):
         return self.backBoard
 
-    # param1 целое число, представляющее строку начальной плитки.
- # param2 целое число, представляющее столбец начальной плитки.
- # param3 строка, представляющая направление слова, размещенного на доске.
- # param4 строка, представляющая слово, размещаемое на доске.
+    
  # exceptions ValueError, если слово не соответствует ограничениям доски.
     def updateBackBoard(self, word, row, col, dir):
         dirLower = dir.lower()
@@ -21,13 +18,13 @@ class Board:
         col = int(col)
         if row > 14 or col > 14 or len(word) > 14:
             raise ValueError("Слово выходит за рамки")
-        if(dirLower == "right"): # символы слова последовательно размещаются вдоль строки, начиная с указанного столбца col.
+        if(dirLower == "вправо"): # символы слова последовательно размещаются вдоль строки, начиная с указанного столбца col.
             countCol = int(col)
             for char in wordUp:
                 char = char.upper()
                 self.backBoard[int(row)][int(countCol)] = char
                 countCol += 1
-        elif(dirLower == "down"): # символы слова последовательно размещаются вдоль столбца, начиная с указанной строки row
+        elif(dirLower == "вниз"): # символы слова последовательно размещаются вдоль столбца, начиная с указанной строки row
             countRow = int(row)
             for char in word:
                 char = char.upper()

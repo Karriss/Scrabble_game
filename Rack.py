@@ -1,9 +1,12 @@
+import random
 class Rack:
     
     def __init__(self, bag):
         self.rack = []
         self.bag = bag
         self.initialize()
+        self.glas = ['А', 'Е', 'И', 'О', 'У', 'Ы', 'Э', 'Ю', 'Я']
+        self.soglas = ['Б', 'В', 'Г', 'Д', 'Ж', 'З', 'Й', 'К', 'Л', 'М', 'Н', 'П', 'Р', 'С', 'Т', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ']
 
     def initialize(self):
         # Добавляем 2 гласные плитки в руку игрока
@@ -12,6 +15,24 @@ class Rack:
         # Добавляем 5 согласные плитки в руку игрока
         for _ in range(5):
             self.addToRack("СОГЛАСНАЯ")
+
+
+    def generate_rack(self):
+        rack = []
+        # Генерация 2 гласных
+        for _ in range(2):
+            rack.append(random.choice(self.glas))
+        # Генерация 5 согласных
+        for _ in range(5):
+            rack.append(random.choice(self.soglas))
+        # Перемешивание букв
+        random.shuffle(rack)
+        return rack
+
+# Пример использования
+    rack = Rack()
+    result = rack.generate_rack()
+    print("Сгенерированные буквы:", result)
 
     def addToRack(self, tile_type):
         # Добавляет плитку в руку игрока, учитывая тип плитки
@@ -30,6 +51,7 @@ class Rack:
     def getRackLength(self):
         return len(self.rack)
 
+# после нажатия кнопки переход хода
     def replenishRack(self):
         # Подсчитываем количество гласных и согласных плиток в текущей руке
         num_vowels = sum(tile.getLetter() in "АЕИОУЫЭЮЯ" for tile in self.rack)

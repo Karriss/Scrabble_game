@@ -1,6 +1,4 @@
 import random
-from Rack import *
-
 
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
@@ -55,7 +53,7 @@ canvas.create_rectangle(
     outline="")
 
 canvas.create_text(
-    135.0,
+    162.0,
     522.0,
     anchor="nw",
     text="Игрок 1",
@@ -64,7 +62,7 @@ canvas.create_text(
 )
 
 canvas.create_text(
-    572.0,
+    610.0,
     522.0,
     anchor="nw",
     text="Игрок 2",
@@ -87,7 +85,7 @@ button_4.place(
     width=55.0,
     height=55.0
 )
-
+     
 canvas.create_rectangle(
     30.0,
     30.0,
@@ -154,285 +152,6 @@ canvas.create_text(
     text="Игрок 2:",
     fill="#000000",
     font=("Kanit Regular", 16 * -1)
-)
-
-canvas.create_text(
-    410.0,
-    28.0,
-    anchor="nw",
-    text="1",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    381.0,
-    53.0,
-    anchor="nw",
-    text="1",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    380.0,
-    84.0,
-    anchor="nw",
-    text="2",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    438.0,
-    28.0,
-    anchor="nw",
-    text="2",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    465.0,
-    28.0,
-    anchor="nw",
-    text="3",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    381.0,
-    112.0,
-    anchor="nw",
-    text="3",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    492.0,
-    28.0,
-    anchor="nw",
-    text="4",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    381.0,
-    140.0,
-    anchor="nw",
-    text="4",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    520.0,
-    28.0,
-    anchor="nw",
-    text="5",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    520.0,
-    28.0,
-    anchor="nw",
-    text="5",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    381.0,
-    170.0,
-    anchor="nw",
-    text="5",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    578.0,
-    28.0,
-    anchor="nw",
-    text="7",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    382.0,
-    229.0,
-    anchor="nw",
-    text="7",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    604.0,
-    28.0,
-    anchor="nw",
-    text="8",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    381.0,
-    259.0,
-    anchor="nw",
-    text="8",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    631.0,
-    28.0,
-    anchor="nw",
-    text="9",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    381.0,
-    289.0,
-    anchor="nw",
-    text="9",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    655.0,
-    28.0,
-    anchor="nw",
-    text="10",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    372.0,
-    317.0,
-    anchor="nw",
-    text="10",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    685.0,
-    28.0,
-    anchor="nw",
-    text="11",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    373.0,
-    345.0,
-    anchor="nw",
-    text="11",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    712.0,
-    28.0,
-    anchor="nw",
-    text="12",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    372.0,
-    373.0,
-    anchor="nw",
-    text="12",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    739.0,
-    28.0,
-    anchor="nw",
-    text="13",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    372.0,
-    404.0,
-    anchor="nw",
-    text="13",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    768.0,
-    28.0,
-    anchor="nw",
-    text="14",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    372.0,
-    432.0,
-    anchor="nw",
-    text="14",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    547.0,
-    28.0,
-    anchor="nw",
-    text="6",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    381.0,
-    201.0,
-    anchor="nw",
-    text="6",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    795.0,
-    28.0,
-    anchor="nw",
-    text="15",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
-)
-
-canvas.create_text(
-    372.0,
-    460.0,
-    anchor="nw",
-    text="15",
-    fill="#000000",
-    font=("Inter Bold", 16 * -1)
 )
 
 canvas.create_rectangle(
@@ -510,7 +229,37 @@ canvas.create_rectangle(
     280.0,
     fill="#E6EA13",
     outline="")
+# сделанное
+canvas.create_rectangle(
+    10.0,
+    318.0,
+    173.0,
+    348.0,
+    fill="#E6EA13",
+    outline="")
 
+canvas.create_text(
+    14.0,
+    325.0,
+    anchor="nw",
+    text="Введите направление:",
+    fill="#000000",
+    font=("Inter Bold", 15 * -1)
+)
+
+entry_4 = Entry(
+    bd=0,
+    bg="#E6EA13",
+    fg="#000716",
+    highlightthickness=0
+)
+entry_4.place(
+    x=177.0,
+    y=318.0,
+    width=90.0,
+    height=28.0
+)
+# конец добавленного
 canvas.create_rectangle(
     10.0,
     284.0,
@@ -556,8 +305,8 @@ button_5 = Button(
     relief="flat"
 )
 button_5.place(
-    x=12.0,
-    y=338.0,
+    x=13.0,
+    y=364.0,
     width=160.0,
     height=30.0
 )
@@ -611,6 +360,27 @@ for i in range(15):
         else:
             canvas.create_rectangle(x1, y1, x2, y2)
 
+
+# Рисуем цифры на столбцы и строки
+text_font = ("Inter Bold", 15)
+x_start_chisla_lin = 410
+y_start_chisla_lin = 35
+interval_chisla_lin = 28
+
+for i in range(1, 16):
+    x = x_start_chisla_lin + (i - 1) * interval_chisla_lin
+    y = y_start_chisla_lin 
+    canvas.create_text(x, y, text=str(i), font=text_font)
+
+text_font = ("Inter Bold", 15)
+x_start_chisla_stolb = 384
+y_start_chisla_stolb = 59
+interval_chisla_stolb = 29
+
+for i in range(1, 16):
+    x = x_start_chisla_stolb
+    y = y_start_chisla_stolb + (i - 1) * interval_chisla_stolb
+    canvas.create_text(x, y, text=str(i), font=text_font)
 
 # Создаем 7 левых квадратов
 white_rect_kv1 = canvas.create_rectangle(13, 550, 363, 600, fill="white")
