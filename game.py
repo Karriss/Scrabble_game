@@ -10,7 +10,6 @@ ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Карина\Desktop\Коды\assets
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
-
 window = Tk()
 
 window.geometry("829x613")
@@ -24,8 +23,104 @@ canvas = Canvas(
     width = 829,
     bd = 0,
     highlightthickness = 0,
-    relief = "ridge"
-)
+    relief = "ridge")
+ 
+def change_1():
+    # Создаем 7 левых квадратов
+    white_rect_kv1 = canvas.create_rectangle(13, 550, 363, 600, fill="white")
+    square_size = 50
+    x_kv = 13
+    y_kv = 550
+    for i in range(7):
+        x_k1 = x_kv + i * square_size
+        y_k1 = y_kv
+        x_k2 = x_k1 + square_size
+        y_k2 = y_k1 + square_size
+        canvas.create_rectangle(x_k1, y_k1, x_k2, y_k2, fill="white", tags=("kv_square_lev", f"kv_lev{i}")) #тег для квадрата
+        
+        start_x_buk_lev = 39
+        start_y_buk_lev = 575
+        
+        # Выбираем случайный символ из русских букв 
+        random_letter = random.choice("абвгдежзиклмнопрстуфхцчшщъыьэюя")
+        
+        # Размещаем букву внутри квадрата, даем тег букве
+        canvas.create_text(start_x_buk_lev + i * square_size, start_y_buk_lev, text=random_letter, font=("Arial", 16), tags=f"buk_lev{i}_text") 
+        
+        
+def change_2():
+    white_rect_kv2 = canvas.create_rectangle(461, 550, 811, 600, fill="white")
+    square_size = 50
+    x_kv = 461
+    y_kv = 550
+    for i in range(7):
+        x_k11 = x_kv + i * square_size
+        y_k11 = y_kv
+        x_k22 = x_k11 + square_size
+        y_k22 = y_k11 + square_size
+        canvas.create_rectangle(x_k11, y_k11, x_k22, y_k22, fill="white", tags=("kv_square_prav", f"kv_prav{i}")) 
+
+        start_x_buk_prav = 486
+        start_y_buk_prav = 575
+            
+        # Выбираем случайный символ из русских букв 
+        random_letter = random.choice("абвгдежзиклмнопрстуфхцчшщъыьэюя")
+            
+        # Размещаем букву внутри квадрата
+        canvas.create_text(start_x_buk_prav + i * square_size, start_y_buk_prav, text=random_letter, font=("Arial", 16), tags=f"buk_prav{i}_text")
+
+def pole():
+    white_rect = canvas.create_rectangle(397, 47, 815, 479, fill="white")
+    cell_width = 26
+    cell_height = 26
+    x_start = 397
+    y_start = 47
+    x_end = 823
+    y_end = 486
+    x_interval = 2
+    y_interval = 3
+    tileArray = []  # Список для хранения индексов каждой клетки
+    for i in range(15):
+        for j in range(15):
+            x1 = x_start + i * (cell_width + x_interval)
+            y1 = y_start + j * (cell_height + y_interval)
+            x2 = x1 + cell_width
+            y2 = y1 + cell_height
+            canvas.create_rectangle(x1, y1, x2, y2)
+    # Вычисляем индексы клетки
+            cell_index = (i, j)
+            tileArray.append(cell_index)
+
+            if cell_index in [(0,0), (7,0), (14,0), (0,7), (14,7), (0,14), (7,14), (14,14)]:
+                canvas.create_rectangle(x1, y1, x2, y2, fill="#D67777")
+            elif cell_index in [(3,0), (11,0), (6,2), (8,2), (0,3), (7,3), (14,3), (2,6), (6,6), (8,6), (12,6), (3,7), (11,7), (2,8), (6,8), (8,8), (12,8), (0,11), (7,11), (14,11), (6,12), (8,12)]:
+                canvas.create_rectangle(x1, y1, x2, y2, fill="#19C6D1")
+            elif cell_index in [(5,1), (9,1), (1,5), (13,5), (1,9), (13,9), (5,13), (9,13)]:
+                canvas.create_rectangle(x1, y1, x2, y2, fill="#4E6FE3")
+            elif cell_index in [(1,1), (2,2), (3,3), (4,4), (13,1), (12,2), (11,3), (10,4), (4,10), (3,11), (2,12), (1,13), (10,10), (11,11), (12,12), (13,13)]:
+                canvas.create_rectangle(x1, y1, x2, y2, fill="#E21B1B")
+            elif cell_index in [(7,7)]:
+                canvas.create_rectangle(x1, y1, x2, y2, fill="#F2E142")
+            else:
+                canvas.create_rectangle(x1, y1, x2, y2)
+
+
+def word():
+    entry_word = entry_1.get()
+    start_row = int(entry_2.get())  
+    start_column = int(entry_3.get())  
+    cell_width = 26
+    cell_height = 26
+    x_start = 397
+    y_start = 47
+    x_interval = 2
+    y_interval = 3
+    x1 = x_start + (start_row-1) * (cell_width + x_interval)  
+    y1 = y_start + (start_column-1) * (cell_height + y_interval) + cell_height / 2  
+    for letter in entry_word:
+        x_center = x1 + cell_width / 2  
+        canvas.create_text(x_center, y1, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
+        x1 += cell_width + x_interval
 
 canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(
@@ -76,7 +171,7 @@ button_4 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_4 clicked"),
+    command=print('click'),
     relief="flat"
 )
 button_4.place(
@@ -91,7 +186,7 @@ canvas.create_rectangle(
     30.0,
     163.0,
     67.0,
-    fill="#F2E142",
+    fill="#E6EA13",
     outline="")
 
 canvas.create_rectangle(
@@ -99,7 +194,7 @@ canvas.create_rectangle(
     80.0,
     163.0,
     117.0,
-    fill="#F2E142",
+    fill="#E6EA13",
     outline="")
 
 canvas.create_rectangle(
@@ -107,7 +202,7 @@ canvas.create_rectangle(
     29.0,
     226.0,
     66.0,
-    fill="#F2E142",
+    fill="#E6EA13",
     outline="")
 
 canvas.create_rectangle(
@@ -115,7 +210,7 @@ canvas.create_rectangle(
     80.0,
     226.0,
     117.0,
-    fill="#F2E142",
+    fill="#E6EA13",
     outline="")
 
 canvas.create_text(
@@ -301,7 +396,7 @@ button_5 = Button(
     image=button_image_2,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_5 clicked"),
+    command=word,
     relief="flat"
 )
 button_5.place(
@@ -322,43 +417,9 @@ button_7 = Button(
 button_7.place(
     x=240,  
     y=33,   
-    width=115,  # ширина кнопки
-    height=40   # высота кнопки
+    width=115,  
+    height=40   
 )
-
-white_rect = canvas.create_rectangle(397, 47, 815, 479, fill="white")
-cell_width = 26
-cell_height = 26
-x_start = 397
-y_start = 47
-x_end = 823
-y_end = 486
-x_interval = 2
-y_interval = 3
-tileArray = []  # Список для хранения индексов каждой клетки
-for i in range(15):
-    for j in range(15):
-        x1 = x_start + i * (cell_width + x_interval)
-        y1 = y_start + j * (cell_height + y_interval)
-        x2 = x1 + cell_width
-        y2 = y1 + cell_height
-        canvas.create_rectangle(x1, y1, x2, y2)
-# Вычисляем индексы клетки
-        cell_index = (i, j)
-        tileArray.append(cell_index)
-
-        if cell_index in [(0,0), (7,0), (14,0), (0,7), (14,7), (0,14), (7,14), (14,14)]:
-            canvas.create_rectangle(x1, y1, x2, y2, fill="#D67777")
-        elif cell_index in [(3,0), (11,0), (6,2), (8,2), (0,3), (7,3), (14,3), (2,6), (6,6), (8,6), (12,6), (3,7), (11,7), (2,8), (6,8), (8,8), (12,8), (0,11), (7,11), (14,11), (6,12), (8,12)]:
-            canvas.create_rectangle(x1, y1, x2, y2, fill="#19C6D1")
-        elif cell_index in [(5,1), (9,1), (1,5), (13,5), (1,9), (13,9), (5,13), (9,13)]:
-            canvas.create_rectangle(x1, y1, x2, y2, fill="#4E6FE3")
-        elif cell_index in [(1,1), (2,2), (3,3), (4,4), (13,1), (12,2), (11,3), (10,4), (4,10), (3,11), (2,12), (1,13), (10,10), (11,11), (12,12), (13,13)]:
-            canvas.create_rectangle(x1, y1, x2, y2, fill="#E21B1B")
-        elif cell_index in [(7,7)]:
-            canvas.create_rectangle(x1, y1, x2, y2, fill="#F2E142")
-        else:
-            canvas.create_rectangle(x1, y1, x2, y2)
 
 
 # Рисуем цифры на столбцы и строки
@@ -382,48 +443,9 @@ for i in range(1, 16):
     y = y_start_chisla_stolb + (i - 1) * interval_chisla_stolb
     canvas.create_text(x, y, text=str(i), font=text_font)
 
-# Создаем 7 левых квадратов
-white_rect_kv1 = canvas.create_rectangle(13, 550, 363, 600, fill="white")
-square_size = 50
-x_kv = 13
-y_kv = 550
-for i in range(7):
-    x_k1 = x_kv + i * square_size
-    y_k1 = y_kv
-    x_k2 = x_k1 + square_size
-    y_k2 = y_k1 + square_size
-    canvas.create_rectangle(x_k1, y_k1, x_k2, y_k2, fill="white", tags=("kv_square_lev", f"kv_lev{i}")) #тег для квадрата
-    
-    start_x_buk_lev = 39
-    start_y_buk_lev = 575
-    
-    # Выбираем случайный символ из русских букв 
-    random_letter = random.choice("абвгдежзиклмнопрстуфхцчшщъыьэюя")
-    
-    # Размещаем букву внутри квадрата, даем тег букве
-    canvas.create_text(start_x_buk_lev + i * square_size, start_y_buk_lev, text=random_letter, font=("Arial", 16), tags=f"buk_lev{i}_text") 
-
-# Создаем 7 правых квадратов
-white_rect_kv2 = canvas.create_rectangle(461, 550, 811, 600, fill="white")
-square_size = 50
-x_kv = 461
-y_kv = 550
-for i in range(7):
-    x_k11 = x_kv + i * square_size
-    y_k11 = y_kv
-    x_k22 = x_k11 + square_size
-    y_k22 = y_k11 + square_size
-    canvas.create_rectangle(x_k11, y_k11, x_k22, y_k22, fill="white", tags=("kv_square_prav", f"kv_prav{i}")) 
-
-    start_x_buk_prav = 486
-    start_y_buk_prav = 575
-    
-    # Выбираем случайный символ из русских букв 
-    random_letter = random.choice("абвгдежзиклмнопрстуфхцчшщъыьэюя")
-    
-    # Размещаем букву внутри квадрата
-    canvas.create_text(start_x_buk_prav + i * square_size, start_y_buk_prav, text=random_letter, font=("Arial", 16), tags=f"buk_prav{i}_text")
-
+change_1()
+change_2()
+pole()
 
 window.resizable(False, False)
 window.mainloop()
