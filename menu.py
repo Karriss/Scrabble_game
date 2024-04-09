@@ -27,8 +27,8 @@ def close_window():
 canvas = Canvas(
     window,
     bg = "#FFFFFF",
-    height = 458,
-    width = 550,
+    height = 613,
+    width = 829,
     bd = 0,
     highlightthickness = 0,
     relief = "ridge"

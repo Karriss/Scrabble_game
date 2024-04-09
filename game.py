@@ -1,20 +1,23 @@
 import random
-
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, messagebox
+import tkinter as tk 
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\Карина\Desktop\Коды\assets game\frame0")
+ASSETS_PATH = OUTPUT_PATH / Path(r"assets game\frame0")
 
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
+
+
 
 window = Tk()
 
 window.geometry("829x613")
 window.configure(bg = "#FFFFFF")
 
+current_player = 1
 
 canvas = Canvas(
     window,
@@ -23,10 +26,13 @@ canvas = Canvas(
     width = 829,
     bd = 0,
     highlightthickness = 0,
-    relief = "ridge")
- 
+    relief = "ridge"
+)
+
 def change_1():
     # Создаем 7 левых квадратов
+    global current_player
+    current_player = 1
     white_rect_kv1 = canvas.create_rectangle(13, 550, 363, 600, fill="white")
     square_size = 50
     x_kv = 13
@@ -47,8 +53,14 @@ def change_1():
         # Размещаем букву внутри квадрата, даем тег букве
         canvas.create_text(start_x_buk_lev + i * square_size, start_y_buk_lev, text=random_letter, font=("Arial", 16), tags=f"buk_lev{i}_text") 
         
+    for i in range(7):
+        canvas.itemconfigure(f"buk_prav{i}_text", state="hidden")  # Скрываем буквы второго игрока
+        canvas.itemconfigure(f"buk_lev{i}_text", state="normal")  # Отображаем буквы первого игрока
+    current_player = 2
         
 def change_2():
+    global current_player
+    current_player = 2
     white_rect_kv2 = canvas.create_rectangle(461, 550, 811, 600, fill="white")
     square_size = 50
     x_kv = 461
@@ -68,6 +80,12 @@ def change_2():
             
         # Размещаем букву внутри квадрата
         canvas.create_text(start_x_buk_prav + i * square_size, start_y_buk_prav, text=random_letter, font=("Arial", 16), tags=f"buk_prav{i}_text")
+
+    for i in range(7):
+        canvas.itemconfigure(f"buk_lev{i}_text", state="hidden")  # Скрываем буквы первого игрока
+        canvas.itemconfigure(f"buk_prav{i}_text", state="normal")  # Отображаем буквы второго игрока
+    current_player = 1
+
 
 def pole():
     white_rect = canvas.create_rectangle(397, 47, 815, 479, fill="white")
@@ -106,21 +124,94 @@ def pole():
 
 
 def word():
-    entry_word = entry_1.get()
-    start_row = int(entry_2.get())  
-    start_column = int(entry_3.get())  
+    entry_word = entry_1.get().lower()  # Получаем введенное слово и приводим к нижнему регистру
+    start_row_str = entry_2.get()  # Получаем строку начальной строки из поля ввода
+    start_column_str = entry_3.get()  # Получаем строку начального столбца из поля ввода
+    direction = entry_4.get().lower()  # Получаем направление из поля ввода и приводим к нижнему регистру
+
+    # Проверка, что все поля ввода заполнены
+    if "" in [entry_word, start_row_str, start_column_str, direction]:
+        messagebox.showinfo("Предупреждение", "Заполните все поля ввода")
+        return
+
+    # Преобразование начальной строки и столбца в целые числа
+    start_row = int(start_row_str)
+    start_column = int(start_column_str)
+
+    # Проверка, находится ли начальная строка и столбец в допустимом диапазоне от 1 до 15
+    if start_row < 1 or start_row > 15 or start_column < 1 or start_column > 15:
+        messagebox.showerror("Ошибка", "Строка или столбец выходит за допустимые границы!")
+        return
+
+    # Проверка корректности направления
+    if direction not in ["вниз", "вправо"]:
+        messagebox.showinfo("Предупреждение", "Введите верное направление!")
+        return
+
     cell_width = 26
     cell_height = 26
     x_start = 397
     y_start = 47
     x_interval = 2
     y_interval = 3
-    x1 = x_start + (start_row-1) * (cell_width + x_interval)  
-    y1 = y_start + (start_column-1) * (cell_height + y_interval) + cell_height / 2  
-    for letter in entry_word:
-        x_center = x1 + cell_width / 2  
-        canvas.create_text(x_center, y1, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
-        x1 += cell_width + x_interval
+    
+    if direction == "вниз":  
+        x1 = x_start + (start_column - 1) * (cell_width + x_interval) + cell_width / 2
+        y1 = y_start + (start_row - 1) * (cell_height + y_interval) + cell_height
+        x_increment = 0
+        y_increment = (cell_height + y_interval)
+        
+        # Проверяем каждую букву слова на выход за границы матрицы
+        for letter in entry_word:
+            if y1 + cell_height > y_start + 16 * (cell_height + y_interval):  # Проверяем, не выходит ли текущая буква за рамки матрицы по вертикали
+                messagebox.showerror("Ошибка", "Слово выходит за рамки!")
+                # Удаляем уже нарисованные буквы
+                canvas.delete("word")
+                return
+            canvas.create_text(x1, y1 - cell_height / 2, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1), tags="word")
+            y1 += y_increment
+            
+    elif direction == "вправо":  
+        x1 = x_start + (start_column - 1) * (cell_width + x_interval)
+        y1 = y_start + (start_row - 1) * (cell_height + y_interval) + cell_height / 2
+        x_increment = cell_width + x_interval
+        y_increment = 0
+        
+        # Проверяем каждую букву слова на выход за границы матрицы
+        for letter in entry_word:
+            if x1 + cell_width > x_start + 15 * (cell_width + x_interval):  # Проверяем, не выходит ли текущая буква за рамки матрицы по горизонтали
+                messagebox.showerror("Ошибка", "Слово выходит за рамки!")
+                # Удаляем уже нарисованные буквы
+                canvas.delete("word")
+                return
+            canvas.create_text(x1 + cell_width / 2, y1, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1), tags="word")
+            x1 += x_increment
+
+'''
+def check_in_dict(word_to_check):
+    try:
+        with open('dic.txt', 'r', encoding='utf-8') as dicfile:
+            file_content = dicfile.read().splitlines()  # Читаем содержимое файла и разделяем его на строки
+    except IOError:
+        print("Ошибка: не удается найти файл или прочитать данные")
+        return False
+    else:
+        word_to_check = word_to_check.lower()  # Приводим введенное слово к нижнему регистру
+        if word_to_check in file_content:
+            return True
+        else:
+            return False
+'''
+def сhange_player():
+    global current_player
+    if current_player == 1: # если ходит первый, то
+        current_player = 2 # меняется на второго игрока
+        change_2()
+    else:
+        if current_player == 2:
+            current_player = 1
+            change_1()
+    return
 
 canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(
@@ -171,7 +262,7 @@ button_4 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=print('click'),
+    #command=сhange_player,
     relief="flat"
 )
 button_4.place(
@@ -186,7 +277,7 @@ canvas.create_rectangle(
     30.0,
     163.0,
     67.0,
-    fill="#E6EA13",
+    fill="#FFFF00",
     outline="")
 
 canvas.create_rectangle(
@@ -194,7 +285,7 @@ canvas.create_rectangle(
     80.0,
     163.0,
     117.0,
-    fill="#E6EA13",
+    fill="#FFFF00",
     outline="")
 
 canvas.create_rectangle(
@@ -202,7 +293,7 @@ canvas.create_rectangle(
     29.0,
     226.0,
     66.0,
-    fill="#E6EA13",
+    fill="#FFFF00",
     outline="")
 
 canvas.create_rectangle(
@@ -210,7 +301,7 @@ canvas.create_rectangle(
     80.0,
     226.0,
     117.0,
-    fill="#E6EA13",
+    fill="#FFFF00",
     outline="")
 
 canvas.create_text(
@@ -324,7 +415,7 @@ canvas.create_rectangle(
     280.0,
     fill="#E6EA13",
     outline="")
-# сделанное
+
 canvas.create_rectangle(
     10.0,
     318.0,
@@ -354,7 +445,7 @@ entry_4.place(
     width=90.0,
     height=28.0
 )
-# конец добавленного
+
 canvas.create_rectangle(
     10.0,
     284.0,
@@ -367,7 +458,7 @@ canvas.create_text(
     14.0,
     289.0,
     anchor="nw",
-    text="Введите строку:",
+    text="Введите столбец:",
     fill="#000000",
     font=("Inter Bold", 16 * -1)
 )
@@ -385,7 +476,7 @@ canvas.create_text(
     14.0,
     255.0,
     anchor="nw",
-    text="Введите столбец:",
+    text="Введите строку:",
     fill="#000000",
     font=("Inter Bold", 16 * -1)
 )
@@ -409,10 +500,10 @@ button_5.place(
 button_7 = Button(
     window,
     text="Завершить игру",
-    bg="#FFFF00",  # желтый цвет
-    fg="#000000",  # черный цвет текста
+    bg="#FFFF00",  
+    fg="#000000",  
     font=("Inter Bold", 10),  
-    command=window.quit  # команда при нажатии
+    command=window.quit  
 )
 button_7.place(
     x=240,  
@@ -420,7 +511,6 @@ button_7.place(
     width=115,  
     height=40   
 )
-
 
 # Рисуем цифры на столбцы и строки
 text_font = ("Inter Bold", 15)
@@ -443,8 +533,11 @@ for i in range(1, 16):
     y = y_start_chisla_stolb + (i - 1) * interval_chisla_stolb
     canvas.create_text(x, y, text=str(i), font=text_font)
 
-change_1()
+#check_in_dict(word_to_check)
+сhange_player()
 change_2()
+change_1()
+
 pole()
 
 window.resizable(False, False)
