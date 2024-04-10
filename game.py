@@ -6,18 +6,15 @@ import tkinter as tk
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets game\frame0")
 
-
+letters_visible = 0  
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
-
-
 
 window = Tk()
 
 window.geometry("829x613")
 window.configure(bg = "#FFFFFF")
 
-current_player = 1
 
 canvas = Canvas(
     window,
@@ -29,43 +26,60 @@ canvas = Canvas(
     relief = "ridge"
 )
 
+def hide_let():
+    for i in range(7):
+        canvas.itemconfig(f"buk_prav{i}_text", stat="hidden")
+
+
+def toggle_letters_visibility():
+    global letters_visible
+    # Если видны левые, скрываем их и показываем правые
+    if letters_visible == 0:
+        for i in range(7):
+            canvas.itemconfig(f"buk_lev{i}_text", state="hidden")  # Скрываем левые
+            canvas.itemconfig(f"buk_prav{i}_text", state="normal")  # Показываем правые
+        letters_visible = 1
+    # Если видны правые, скрываем их и показываем левые
+    else:
+        for i in range(7):
+            canvas.itemconfig(f"buk_prav{i}_text", state="hidden")  # Скрываем правые
+            canvas.itemconfig(f"buk_lev{i}_text", state="normal")  # Показываем левые
+        letters_visible = 0
+
+
 def change_1():
+    global x_k1, y_k1
     # Создаем 7 левых квадратов
-    global current_player
-    current_player = 1
     white_rect_kv1 = canvas.create_rectangle(13, 550, 363, 600, fill="white")
     square_size = 50
     x_kv = 13
     y_kv = 550
-    for i in range(7):
+    player1_letters = generate_player_letters()[0]  # Получаем буквы для первого игрока
+    for i, letter in enumerate(player1_letters):
         x_k1 = x_kv + i * square_size
         y_k1 = y_kv
         x_k2 = x_k1 + square_size
         y_k2 = y_k1 + square_size
-        canvas.create_rectangle(x_k1, y_k1, x_k2, y_k2, fill="white", tags=("kv_square_lev", f"kv_lev{i}")) #тег для квадрата
+        canvas.create_rectangle(x_k1, y_k1, x_k2, y_k2, fill="white", tags=("kv_square_lev", f"kv_lev{i}")) 
         
         start_x_buk_lev = 39
         start_y_buk_lev = 575
         
-        # Выбираем случайный символ из русских букв 
-        random_letter = random.choice("абвгдежзиклмнопрстуфхцчшщъыьэюя")
-        
         # Размещаем букву внутри квадрата, даем тег букве
-        canvas.create_text(start_x_buk_lev + i * square_size, start_y_buk_lev, text=random_letter, font=("Arial", 16), tags=f"buk_lev{i}_text") 
+        start_x_buk_lev = x_k1 + square_size / 2
+        start_y_buk_lev = y_k1 + square_size / 2
+        canvas.create_text(start_x_buk_lev + square_size /2, start_y_buk_lev, text=letter, font=("Arial", 16), tags=f"buk_lev{i}_text") 
         
-    for i in range(7):
-        canvas.itemconfigure(f"buk_prav{i}_text", state="hidden")  # Скрываем буквы второго игрока
-        canvas.itemconfigure(f"buk_lev{i}_text", state="normal")  # Отображаем буквы первого игрока
-    current_player = 2
-        
+
 def change_2():
-    global current_player
-    current_player = 2
+    
+    # Создаем 7 правых квадратов
     white_rect_kv2 = canvas.create_rectangle(461, 550, 811, 600, fill="white")
     square_size = 50
     x_kv = 461
     y_kv = 550
-    for i in range(7):
+    player2_letters = generate_player_letters()[1]  # Получаем буквы для второго игрока
+    for i, letter in enumerate(player2_letters):
         x_k11 = x_kv + i * square_size
         y_k11 = y_kv
         x_k22 = x_k11 + square_size
@@ -75,17 +89,10 @@ def change_2():
         start_x_buk_prav = 486
         start_y_buk_prav = 575
             
-        # Выбираем случайный символ из русских букв 
-        random_letter = random.choice("абвгдежзиклмнопрстуфхцчшщъыьэюя")
-            
         # Размещаем букву внутри квадрата
-        canvas.create_text(start_x_buk_prav + i * square_size, start_y_buk_prav, text=random_letter, font=("Arial", 16), tags=f"buk_prav{i}_text")
-
-    for i in range(7):
-        canvas.itemconfigure(f"buk_lev{i}_text", state="hidden")  # Скрываем буквы первого игрока
-        canvas.itemconfigure(f"buk_prav{i}_text", state="normal")  # Отображаем буквы второго игрока
-    current_player = 1
-
+        start_x_buk_prav = x_k11 + square_size / 2
+        start_y_buk_prav = y_k11 + square_size / 2
+        canvas.create_text(start_x_buk_prav, start_y_buk_prav, text=letter, font=("Arial", 16), tags=f"buk_prav{i}_text")
 
 def pole():
     white_rect = canvas.create_rectangle(397, 47, 815, 479, fill="white")
@@ -155,6 +162,9 @@ def word():
     x_interval = 2
     y_interval = 3
     
+    # Список для хранения идентификаторов созданных букв
+    word_ids = []
+
     if direction == "вниз":  
         x1 = x_start + (start_column - 1) * (cell_width + x_interval) + cell_width / 2
         y1 = y_start + (start_row - 1) * (cell_height + y_interval) + cell_height
@@ -165,10 +175,11 @@ def word():
         for letter in entry_word:
             if y1 + cell_height > y_start + 16 * (cell_height + y_interval):  # Проверяем, не выходит ли текущая буква за рамки матрицы по вертикали
                 messagebox.showerror("Ошибка", "Слово выходит за рамки!")
-                # Удаляем уже нарисованные буквы
-                canvas.delete("word")
+                # Удаляем только последнюю нарисованную букву
+                canvas.delete(word_ids[-1])
                 return
-            canvas.create_text(x1, y1 - cell_height / 2, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1), tags="word")
+            text_id = canvas.create_text(x1, y1 - cell_height / 2, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
+            word_ids.append(text_id)
             y1 += y_increment
             
     elif direction == "вправо":  
@@ -181,37 +192,34 @@ def word():
         for letter in entry_word:
             if x1 + cell_width > x_start + 15 * (cell_width + x_interval):  # Проверяем, не выходит ли текущая буква за рамки матрицы по горизонтали
                 messagebox.showerror("Ошибка", "Слово выходит за рамки!")
-                # Удаляем уже нарисованные буквы
-                canvas.delete("word")
+                # Удаляем только последнюю нарисованную букву
+                canvas.delete(word_ids[-1])
                 return
-            canvas.create_text(x1 + cell_width / 2, y1, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1), tags="word")
+            text_id = canvas.create_text(x1 + cell_width / 2, y1, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
+            word_ids.append(text_id)
             x1 += x_increment
 
-'''
-def check_in_dict(word_to_check):
-    try:
-        with open('dic.txt', 'r', encoding='utf-8') as dicfile:
-            file_content = dicfile.read().splitlines()  # Читаем содержимое файла и разделяем его на строки
-    except IOError:
-        print("Ошибка: не удается найти файл или прочитать данные")
-        return False
-    else:
-        word_to_check = word_to_check.lower()  # Приводим введенное слово к нижнему регистру
-        if word_to_check in file_content:
-            return True
-        else:
-            return False
-'''
-def сhange_player():
-    global current_player
-    if current_player == 1: # если ходит первый, то
-        current_player = 2 # меняется на второго игрока
-        change_2()
-    else:
-        if current_player == 2:
-            current_player = 1
-            change_1()
-    return
+def generate_player_letters():
+    glas = ['А', 'Е', 'И', 'О', 'У', 'Ы', 'Э', 'Ю', 'Я']
+    soglas = ['Б', 'В', 'Г', 'Д', 'Ж', 'З', 'Й', 'К', 'Л', 'М', 'Н', 'П', 'Р', 'С', 'Т', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ']
+    
+    player1_letters = []
+    player2_letters = []
+    
+    # Выбираем 2 гласные для каждого игрока
+    for _ in range(2):
+        player1_letters.append(random.choice(glas))
+        player2_letters.append(random.choice(glas))
+        
+    # Выбираем 5 согласных для каждого игрока
+    for _ in range(5):
+        player1_letters.append(random.choice(soglas))
+        player2_letters.append(random.choice(soglas))
+    
+    return player1_letters, player2_letters
+
+# Генерируем буквы для каждого игрока
+player1_letters, player2_letters = generate_player_letters()
 
 canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(
@@ -262,7 +270,7 @@ button_4 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    #command=сhange_player,
+    command=lambda:(toggle_letters_visibility()),
     relief="flat"
 )
 button_4.place(
@@ -534,11 +542,12 @@ for i in range(1, 16):
     canvas.create_text(x, y, text=str(i), font=text_font)
 
 #check_in_dict(word_to_check)
-сhange_player()
-change_2()
-change_1()
 
+change_1()
+change_2()
 pole()
+hide_let()
+generate_player_letters()
 
 window.resizable(False, False)
 window.mainloop()
