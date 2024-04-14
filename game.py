@@ -1,19 +1,24 @@
 import random
+from tkinter import messagebox
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, messagebox
 import tkinter as tk 
+from random import shuffle
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets game\frame0")
 
-letters_visible = 0  
+
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
+
+
 
 window = Tk()
 
 window.geometry("829x613")
 window.configure(bg = "#FFFFFF")
+
 
 
 canvas = Canvas(
@@ -26,73 +31,174 @@ canvas = Canvas(
     relief = "ridge"
 )
 
-def hide_let():
-    for i in range(7):
-        canvas.itemconfig(f"buk_prav{i}_text", stat="hidden")
+original_letters_list = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'э', 'я', 'я']
 
+def create_letter_list():
+    global letters
+    letters = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'э', 'я', 'я']
+    return letters
 
-def toggle_letters_visibility():
-    global letters_visible
-    # Если видны левые, скрываем их и показываем правые
-    if letters_visible == 0:
-        for i in range(7):
-            canvas.itemconfig(f"buk_lev{i}_text", state="hidden")  # Скрываем левые
-            canvas.itemconfig(f"buk_prav{i}_text", state="normal")  # Показываем правые
-        letters_visible = 1
-    # Если видны правые, скрываем их и показываем левые
-    else:
-        for i in range(7):
-            canvas.itemconfig(f"buk_prav{i}_text", state="hidden")  # Скрываем правые
-            canvas.itemconfig(f"buk_lev{i}_text", state="normal")  # Показываем левые
-        letters_visible = 0
+def random_letters_1():
+    global original_letters_list
+    random_letters = random.sample(original_letters_list, 7)
+    for letter in random_letters:
+        original_letters_list.remove(letter)
+    return random_letters
 
+def random_letters_2():
+    global original_letters_list
+    random_letters = random.sample(original_letters_list, 7)
+    for letter in random_letters:
+        original_letters_list.remove(letter)
+    return random_letters
 
 def change_1():
-    global x_k1, y_k1
-    # Создаем 7 левых квадратов
     white_rect_kv1 = canvas.create_rectangle(13, 550, 363, 600, fill="white")
-    square_size = 50
+
     x_kv = 13
     y_kv = 550
-    player1_letters = generate_player_letters()[0]  # Получаем буквы для первого игрока
-    for i, letter in enumerate(player1_letters):
-        x_k1 = x_kv + i * square_size
-        y_k1 = y_kv
-        x_k2 = x_k1 + square_size
-        y_k2 = y_k1 + square_size
-        canvas.create_rectangle(x_k1, y_k1, x_k2, y_k2, fill="white", tags=("kv_square_lev", f"kv_lev{i}")) 
-        
-        start_x_buk_lev = 39
-        start_y_buk_lev = 575
-        
-        # Размещаем букву внутри квадрата, даем тег букве
-        start_x_buk_lev = x_k1 + square_size / 2
-        start_y_buk_lev = y_k1 + square_size / 2
-        canvas.create_text(start_x_buk_lev + square_size /2, start_y_buk_lev, text=letter, font=("Arial", 16), tags=f"buk_lev{i}_text") 
-        
+    square_size = 50
+    for i in range(7):
+        x_k1 = x_kv + i * square_size + square_size // 2
+        y_k1 = y_kv + square_size // 2
+        canvas.create_text(x_k1, y_k1, text=letters_1[i], fill="black", font=("Arial", 20), tags=("kv_text_1", f"kv_lev{i}"))
 
 def change_2():
-    
-    # Создаем 7 правых квадратов
     white_rect_kv2 = canvas.create_rectangle(461, 550, 811, 600, fill="white")
     square_size = 50
     x_kv = 461
     y_kv = 550
-    player2_letters = generate_player_letters()[1]  # Получаем буквы для второго игрока
-    for i, letter in enumerate(player2_letters):
-        x_k11 = x_kv + i * square_size
-        y_k11 = y_kv
-        x_k22 = x_k11 + square_size
-        y_k22 = y_k11 + square_size
-        canvas.create_rectangle(x_k11, y_k11, x_k22, y_k22, fill="white", tags=("kv_square_prav", f"kv_prav{i}")) 
+    for i in range(7):
+        x_k11 = x_kv + i * square_size + square_size // 2
+        y_k11 = y_kv + square_size // 2
+        canvas.create_text(x_k11, y_k11, text=letters_2[i], fill="black", font=("Arial", 20), tags=("kv_text_2", f"kv_prav{i}"))
 
-        start_x_buk_prav = 486
-        start_y_buk_prav = 575
+def toggle_letters():
+    global letters_1, letters_2
+    if toggle_letters.counter % 2 == 0:
+        for tag in canvas.find_withtag("kv_text_2"):
+            canvas.itemconfig(tag, text="")
+        change_1()
+    else:
+        for tag in canvas.find_withtag("kv_text_1"):
+            canvas.itemconfig(tag, text="")
+        change_2()
+    toggle_letters.counter += 1
+
+toggle_letters.counter = 0
+
+letters_1 = random_letters_1()
+letters_2 = random_letters_2()
+all_letters = letters_1 + letters_2
+def word():
+    global original_letters_list
+    try:
+        entry_word = entry_1.get().lower()  # Получаем введенное слово и приводим к нижнему регистру
+        start_row_str = entry_2.get()  # Получаем строку начальной строки из поля ввода
+        start_column_str = entry_3.get()  # Получаем строку начального столбца из поля ввода
+        direction = entry_4.get().lower()  # Получаем направление из поля ввода и приводим к нижнему регистру
+
+        # Проверка, что все поля ввода заполнены
+        if "" in [entry_word, start_row_str, start_column_str, direction]:
+            messagebox.showinfo("Предупреждение", "Заполните все поля ввода")
+            return
+
+        # Преобразование начальной строки и столбца в целые числа
+        start_row = int(start_row_str)
+        start_column = int(start_column_str)
+
+        # Проверка, находится ли начальная строка и столбец в допустимом диапазоне от 1 до 15
+        if start_row < 1 or start_row > 15 or start_column < 1 or start_column > 15:
+            messagebox.showerror("Ошибка", "Строка или столбец выходит за допустимые границы!")
+            return
+        with open("dic.txt", "r", encoding="utf-8") as file:
+            dictionary = set(word.strip().lower() for word in file)
+
+        # Проверка, существует ли введенное слово в словаре
+        if entry_word not in dictionary:
+            messagebox.showerror("Ошибка", f"Слова '{entry_word}' нет в словаре!")
+            return
+        cell_width = 26
+        cell_height = 26
+        x_start = 397
+        y_start = 47
+        x_interval = 2
+        y_interval = 3
+
+        draw_word = True  # Переменная-флаг для определения, нужно ли рисовать слово
+
+        # Проверяем, что каждая буква из введенного слова присутствует в списке всех букв
+        current_letters = letters_1 if is_player_1_turn else letters_2
+        for letter in entry_word:
+            if letter not in current_letters:
+                messagebox.showerror("Ошибка", f"Буквы '{letter}' нет в поле!")
+                draw_word = False
+                break
+
+        for letter in entry_word:
+            if direction == "вниз":
+                if start_row + entry_word.index(letter) > 15:
+                    messagebox.showerror("Ошибка", f"Слово '{entry_word}' выходит за пределы поля!")
+                    draw_word = False
+                    break
+            elif direction == "вправо":
+                if start_column + entry_word.index(letter) > 15:
+                    messagebox.showerror("Ошибка", f"Слово '{entry_word}' выходит за пределы поля!")
+                    draw_word = False
+                    break
+        word_ids = []
+        if draw_word:
+            current_letters = letters_1 if is_player_1_turn else letters_2
+            for letter in entry_word:
+                current_letters.remove(letter) 
+                new_letter = random.choice(original_letters_list)
+                original_letters_list.remove(new_letter)
+                current_letters.append(new_letter)
+            current_letters = letters_1 if is_player_1_turn else letters_2
+
+            # Удаление использованных букв из списка
+            current_letters[:] = [letter for letter in current_letters if letter is not None]
+
+            if direction == "вниз":  
+                x1 = x_start + (start_column - 1) * (cell_width + x_interval) + cell_width / 2
+                y1 = y_start + (start_row - 1) * (cell_height + y_interval) + cell_height
+                x_increment = 0
+                y_increment = (cell_height + y_interval)
+                
+                for letter in entry_word:
+                    if y1 + cell_height > y_start + 16 * (cell_height + y_interval):  # Проверяем, не выходит ли текущая буква за рамки матрицы по вертикали
+                        messagebox.showerror("Ошибка", "Слово выходит за рамки!")
+                        
+                        canvas.delete(word_ids[-1],word_ids[-2],word_ids[-3],word_ids[-4],word_ids[-5],word_ids[-6],word_ids[-7])
+                        return
+                    text_id = canvas.create_text(x1, y1 - cell_height / 2, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
+                    word_ids.append(text_id)
+                    y1 += y_increment
+                    
+            elif direction == "вправо":
+                x1 = x_start + (start_column - 1) * (cell_width + x_interval)
+                y1 = y_start + (start_row - 1) * (cell_height + y_interval) + cell_height / 2
+                x_increment = cell_width + x_interval
+                y_increment = 0
             
-        # Размещаем букву внутри квадрата
-        start_x_buk_prav = x_k11 + square_size / 2
-        start_y_buk_prav = y_k11 + square_size / 2
-        canvas.create_text(start_x_buk_prav, start_y_buk_prav, text=letter, font=("Arial", 16), tags=f"buk_prav{i}_text")
+                for letter in entry_word:
+                    if x1 + cell_width > x_start + 15 * (cell_width + x_interval):  # Проверяем, не выходит ли текущая буква за рамки матрицы по горизонтали
+                        messagebox.showerror("Ошибка", "Слово выходит за рамки!")
+
+                        canvas.delete(word_ids[-1],word_ids[-2],word_ids[-3],word_ids[-4],word_ids[-5],word_ids[-6],word_ids[-7])
+                        return
+                    text_id = canvas.create_text(x1 + cell_width / 2, y1, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
+                    word_ids.append(text_id)
+                    x1 += x_increment
+    except: 
+        messagebox.showerror("Ошибка", "Введите цифру!")
+
+is_player_1_turn = True
+
+# Функция для смены хода между игроками
+def switch_turn():
+    global is_player_1_turn
+    is_player_1_turn = not is_player_1_turn
 
 def pole():
     white_rect = canvas.create_rectangle(397, 47, 815, 479, fill="white")
@@ -100,20 +206,21 @@ def pole():
     cell_height = 26
     x_start = 397
     y_start = 47
-    x_end = 823
-    y_end = 486
     x_interval = 2
     y_interval = 3
     tileArray = []  # Список для хранения индексов каждой клетки
-    for i in range(15):
-        for j in range(15):
-            x1 = x_start + i * (cell_width + x_interval)
-            y1 = y_start + j * (cell_height + y_interval)
+    for row in range(0, 15):
+        tileRow = []
+        for column in  range(0, 15):
+            tileArray.append(tileRow)
+            x1 = x_start + row * (cell_width + x_interval)
+            y1 = y_start + column * (cell_height + y_interval)
             x2 = x1 + cell_width
             y2 = y1 + cell_height
             canvas.create_rectangle(x1, y1, x2, y2)
+            tileRow=[]
     # Вычисляем индексы клетки
-            cell_index = (i, j)
+            cell_index = (row, column)
             tileArray.append(cell_index)
 
             if cell_index in [(0,0), (7,0), (14,0), (0,7), (14,7), (0,14), (7,14), (14,14)]:
@@ -129,97 +236,6 @@ def pole():
             else:
                 canvas.create_rectangle(x1, y1, x2, y2)
 
-
-def word():
-    entry_word = entry_1.get().lower()  # Получаем введенное слово и приводим к нижнему регистру
-    start_row_str = entry_2.get()  # Получаем строку начальной строки из поля ввода
-    start_column_str = entry_3.get()  # Получаем строку начального столбца из поля ввода
-    direction = entry_4.get().lower()  # Получаем направление из поля ввода и приводим к нижнему регистру
-
-    # Проверка, что все поля ввода заполнены
-    if "" in [entry_word, start_row_str, start_column_str, direction]:
-        messagebox.showinfo("Предупреждение", "Заполните все поля ввода")
-        return
-
-    # Преобразование начальной строки и столбца в целые числа
-    start_row = int(start_row_str)
-    start_column = int(start_column_str)
-
-    # Проверка, находится ли начальная строка и столбец в допустимом диапазоне от 1 до 15
-    if start_row < 1 or start_row > 15 or start_column < 1 or start_column > 15:
-        messagebox.showerror("Ошибка", "Строка или столбец выходит за допустимые границы!")
-        return
-
-    # Проверка корректности направления
-    if direction not in ["вниз", "вправо"]:
-        messagebox.showinfo("Предупреждение", "Введите верное направление!")
-        return
-
-    cell_width = 26
-    cell_height = 26
-    x_start = 397
-    y_start = 47
-    x_interval = 2
-    y_interval = 3
-    
-    # Список для хранения идентификаторов созданных букв
-    word_ids = []
-
-    if direction == "вниз":  
-        x1 = x_start + (start_column - 1) * (cell_width + x_interval) + cell_width / 2
-        y1 = y_start + (start_row - 1) * (cell_height + y_interval) + cell_height
-        x_increment = 0
-        y_increment = (cell_height + y_interval)
-        
-        # Проверяем каждую букву слова на выход за границы матрицы
-        for letter in entry_word:
-            if y1 + cell_height > y_start + 16 * (cell_height + y_interval):  # Проверяем, не выходит ли текущая буква за рамки матрицы по вертикали
-                messagebox.showerror("Ошибка", "Слово выходит за рамки!")
-                # Удаляем только последнюю нарисованную букву
-                canvas.delete(word_ids[-1])
-                return
-            text_id = canvas.create_text(x1, y1 - cell_height / 2, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
-            word_ids.append(text_id)
-            y1 += y_increment
-            
-    elif direction == "вправо":  
-        x1 = x_start + (start_column - 1) * (cell_width + x_interval)
-        y1 = y_start + (start_row - 1) * (cell_height + y_interval) + cell_height / 2
-        x_increment = cell_width + x_interval
-        y_increment = 0
-        
-        # Проверяем каждую букву слова на выход за границы матрицы
-        for letter in entry_word:
-            if x1 + cell_width > x_start + 15 * (cell_width + x_interval):  # Проверяем, не выходит ли текущая буква за рамки матрицы по горизонтали
-                messagebox.showerror("Ошибка", "Слово выходит за рамки!")
-                # Удаляем только последнюю нарисованную букву
-                canvas.delete(word_ids[-1])
-                return
-            text_id = canvas.create_text(x1 + cell_width / 2, y1, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
-            word_ids.append(text_id)
-            x1 += x_increment
-
-def generate_player_letters():
-    glas = ['А', 'Е', 'И', 'О', 'У', 'Ы', 'Э', 'Ю', 'Я']
-    soglas = ['Б', 'В', 'Г', 'Д', 'Ж', 'З', 'Й', 'К', 'Л', 'М', 'Н', 'П', 'Р', 'С', 'Т', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ']
-    
-    player1_letters = []
-    player2_letters = []
-    
-    # Выбираем 2 гласные для каждого игрока
-    for _ in range(2):
-        player1_letters.append(random.choice(glas))
-        player2_letters.append(random.choice(glas))
-        
-    # Выбираем 5 согласных для каждого игрока
-    for _ in range(5):
-        player1_letters.append(random.choice(soglas))
-        player2_letters.append(random.choice(soglas))
-    
-    return player1_letters, player2_letters
-
-# Генерируем буквы для каждого игрока
-player1_letters, player2_letters = generate_player_letters()
 
 canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(
@@ -270,7 +286,7 @@ button_4 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda:(toggle_letters_visibility()),
+    command=lambda:(switch_turn(),toggle_letters()),
     relief="flat"
 )
 button_4.place(
@@ -285,7 +301,7 @@ canvas.create_rectangle(
     30.0,
     163.0,
     67.0,
-    fill="#FFFF00",
+    fill="#F2E142",
     outline="")
 
 canvas.create_rectangle(
@@ -293,7 +309,7 @@ canvas.create_rectangle(
     80.0,
     163.0,
     117.0,
-    fill="#FFFF00",
+    fill="#F2E142",
     outline="")
 
 canvas.create_rectangle(
@@ -301,7 +317,7 @@ canvas.create_rectangle(
     29.0,
     226.0,
     66.0,
-    fill="#FFFF00",
+    fill="#F2E142",
     outline="")
 
 canvas.create_rectangle(
@@ -309,7 +325,7 @@ canvas.create_rectangle(
     80.0,
     226.0,
     117.0,
-    fill="#FFFF00",
+    fill="#F2E142",
     outline="")
 
 canvas.create_text(
@@ -541,13 +557,9 @@ for i in range(1, 16):
     y = y_start_chisla_stolb + (i - 1) * interval_chisla_stolb
     canvas.create_text(x, y, text=str(i), font=text_font)
 
-#check_in_dict(word_to_check)
-
 change_1()
 change_2()
 pole()
-hide_let()
-generate_player_letters()
-
+toggle_letters()
 window.resizable(False, False)
 window.mainloop()

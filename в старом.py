@@ -3,7 +3,6 @@ from tkinter import messagebox
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, messagebox
 import tkinter as tk 
-from random import shuffle
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets game\frame0")
@@ -32,90 +31,72 @@ canvas = Canvas(
 )
 
 
-# def hide_let():
-#     for i in range(7):
-#         canvas.itemconfig(letters_2[i], stat="hidden")
+def hide_let():
+    for i in range(7):
+        canvas.itemconfig(f"buk_prav{i}_text", stat="hidden")
     
-# def toggle_letters_visibility():
-#     global letters_visible
-#     # Если видны левые, скрываем их и показываем правые
-#     if letters_visible == 0:
-#         for i in range(7):
-#             canvas.itemconfig(letters_1[i], state="hidden")  # Скрываем левые
-#             canvas.itemconfig(letters_2[i], state="normal")  # Показываем правые
-#         letters_visible = 1
-#     # Если видны правые, скрываем их и показываем левые
-#     else:
-#         for i in range(7):
-#             canvas.itemconfig(letters_1[i], state="hidden")  # Скрываем правые
-#             canvas.itemconfig(letters_2[i], state="normal")  # Показываем левые
-#         letters_visible = 0
+def toggle_letters_visibility():
+    global letters_visible
+    # Если видны левые, скрываем их и показываем правые
+    if letters_visible == 0:
+        for i in range(7):
+            canvas.itemconfig(f"buk_lev{i}_text", state="hidden")  # Скрываем левые
+            canvas.itemconfig(f"buk_prav{i}_text", state="normal")  # Показываем правые
+        letters_visible = 1
+    # Если видны правые, скрываем их и показываем левые
+    else:
+        for i in range(7):
+            canvas.itemconfig(f"buk_prav{i}_text", state="hidden")  # Скрываем правые
+            canvas.itemconfig(f"buk_lev{i}_text", state="normal")  # Показываем левые
+        letters_visible = 0
 
-
-
-original_letters_list = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'э', 'я', 'я']
-
-def create_letter_list():
-    global letters
-    letters = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'э', 'я', 'я']
-    return letters
-
-def random_letters_1():
-    global original_letters_list
-    random_letters = random.sample(original_letters_list, 7)
-    for letter in random_letters:
-        original_letters_list.remove(letter)
-    return random_letters
-
-def random_letters_2():
-    global original_letters_list
-    random_letters = random.sample(original_letters_list, 7)
-    for letter in random_letters:
-        original_letters_list.remove(letter)
-    return random_letters
-
-
+letters_visible = 0
+ 
 def change_1():
+    # Создаем 7 левых квадратов
     white_rect_kv1 = canvas.create_rectangle(13, 550, 363, 600, fill="white")
-
+    square_size = 50
     x_kv = 13
     y_kv = 550
-    square_size = 50
     for i in range(7):
-        x_k1 = x_kv + i * square_size + square_size // 2
-        y_k1 = y_kv + square_size // 2
-        canvas.create_text(x_k1, y_k1, text=letters_1[i], fill="black", font=("Arial", 20), tags=("kv_text_1", f"kv_lev{i}"))
-
+        x_k1 = x_kv + i * square_size
+        y_k1 = y_kv
+        x_k2 = x_k1 + square_size
+        y_k2 = y_k1 + square_size
+        canvas.create_rectangle(x_k1, y_k1, x_k2, y_k2, fill="white", tags=("kv_square_lev", f"kv_lev{i}")) #тег для квадрата
+        
+        start_x_buk_lev = 39
+        start_y_buk_lev = 575
+        
+        # Выбираем случайный символ из русских букв 
+        random_letter = random.choice("абвгдежзиклмнопрстуфхцчшщъыьэюя")
+        
+        # Размещаем букву внутри квадрата, даем тег букве
+        canvas.create_text(start_x_buk_lev + i * square_size, start_y_buk_lev, text=random_letter, font=("Arial", 16), tags=f"buk_lev{i}_text") 
+        
+        
 def change_2():
     white_rect_kv2 = canvas.create_rectangle(461, 550, 811, 600, fill="white")
     square_size = 50
     x_kv = 461
     y_kv = 550
     for i in range(7):
-        x_k11 = x_kv + i * square_size + square_size // 2
-        y_k11 = y_kv + square_size // 2
-        canvas.create_text(x_k11, y_k11, text=letters_2[i], fill="black", font=("Arial", 20), tags=("kv_text_2", f"kv_prav{i}"))
+        x_k11 = x_kv + i * square_size
+        y_k11 = y_kv
+        x_k22 = x_k11 + square_size
+        y_k22 = y_k11 + square_size
+        canvas.create_rectangle(x_k11, y_k11, x_k22, y_k22, fill="white", tags=("kv_square_prav", f"kv_prav{i}")) 
 
-def toggle_letters():
-    global letters_1, letters_2
-    if toggle_letters.counter % 2 == 0:
-        for tag in canvas.find_withtag("kv_text_2"):
-            canvas.itemconfig(tag, text="")
-        change_1()
-    else:
-        for tag in canvas.find_withtag("kv_text_1"):
-            canvas.itemconfig(tag, text="")
-        change_2()
-    toggle_letters.counter += 1
+        start_x_buk_prav = 486
+        start_y_buk_prav = 575
+            
+        # Выбираем случайный символ из русских букв 
+        random_letter = random.choice("абвгдежзиклмнопрстуфхцчшщъыьэюя")
+            
+        # Размещаем букву внутри квадрата
+        canvas.create_text(start_x_buk_prav + i * square_size, start_y_buk_prav, text=random_letter, font=("Arial", 16), tags=f"buk_prav{i}_text")
 
-toggle_letters.counter = 0
-
-letters_1 = random_letters_1()
-letters_2 = random_letters_2()
-all_letters = letters_1 + letters_2
 def word():
-
-    global original_letters_list
     entry_word = entry_1.get().lower()  # Получаем введенное слово и приводим к нижнему регистру
     start_row_str = entry_2.get()  # Получаем строку начальной строки из поля ввода
     start_column_str = entry_3.get()  # Получаем строку начального столбца из поля ввода
@@ -134,30 +115,42 @@ def word():
     if start_row < 1 or start_row > 15 or start_column < 1 or start_column > 15:
         messagebox.showerror("Ошибка", "Строка или столбец выходит за допустимые границы!")
         return
-    with open("dic.txt", "r", encoding="utf-8") as file:
-        dictionary = set(word.strip().lower() for word in file)
 
-    # Проверка, существует ли введенное слово в словаре
-    if entry_word not in dictionary:
-        messagebox.showerror("Ошибка", f"Слова '{entry_word}' нет в словаре!")
+     # Проверка корректности направления
+    if direction not in ["вниз", "вправо"]:
+        messagebox.showinfo("Предупреждение", "Введите верное направление!")
         return
+    
     cell_width = 26
     cell_height = 26
     x_start = 397
     y_start = 47
     x_interval = 2
     y_interval = 3
-
+    
+    direction = entry_4.get().lower()  # Приводим введенное значение к нижнему регистру
+    
     draw_word = True  # Переменная-флаг для определения, нужно ли рисовать слово
+    
+    # Собираем все буквы из квадратов в списки
+    all_letters_left = []
+    for i in range(7):
+        for tag in canvas.find_withtag(f"buk_lev{i}_text"):
+            all_letters_left.append(canvas.itemcget(tag, "text"))
+    
+    all_letters_right = []
+    for i in range(7):
+        for tag in canvas.find_withtag(f"buk_prav{i}_text"):
+            all_letters_right.append(canvas.itemcget(tag, "text"))
+    
 
     # Проверяем, что каждая буква из введенного слова присутствует в списке всех букв
-    current_letters = letters_1 if is_player_1_turn else letters_2
+    all_letters = all_letters_left + all_letters_right
     for letter in entry_word:
-        if letter not in current_letters:
+        if letter not in all_letters:
             messagebox.showerror("Ошибка", f"Буквы '{letter}' нет в поле!")
             draw_word = False
             break
-
     for letter in entry_word:
         if direction == "вниз":
             if start_row + entry_word.index(letter) > 15:
@@ -171,17 +164,6 @@ def word():
                 break
     word_ids = []
     if draw_word:
-        current_letters = letters_1 if is_player_1_turn else letters_2
-        for letter in entry_word:
-            current_letters.remove(letter) 
-            new_letter = random.choice(original_letters_list)
-            original_letters_list.remove(new_letter)
-            current_letters.append(new_letter)
-        current_letters = letters_1 if is_player_1_turn else letters_2
-
-        # Удаление использованных букв из списка
-        current_letters[:] = [letter for letter in current_letters if letter is not None]
-
         # Оставшаяся часть функции для рисования слова без изменений
         if direction == "вниз":  
             x1 = x_start + (start_column - 1) * (cell_width + x_interval) + cell_width / 2
@@ -214,33 +196,40 @@ def word():
                 text_id = canvas.create_text(x1 + cell_width / 2, y1, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
                 word_ids.append(text_id)
                 x1 += x_increment
-is_player_1_turn = True
+    for letter in entry_word: # Удаление букв из списка всех букв и уменьшение количества букв в мешке:
+            all_letters.remove(letter) # Для каждой буквы удаляется ее экземпляр из списка всех букв
+            for i, (l, c) in enumerate(bag_list_1):
+                if l == letter:
+                    bag_list_1[i] = (l, c - 1)  
 
-# Функция для смены хода между игроками
-def switch_turn():
-    global is_player_1_turn
-    is_player_1_turn = not is_player_1_turn
+        # Случайная замена букв:
+    for i in range(len(entry_word)): # проходятся все буквы в слове.
+        new_letter = random.choice(all_letters)
+        all_letters.remove(new_letter) # удаляется из списка всех букв
+        entry_word[i] = new_letter
+
+
+
 def pole():
     white_rect = canvas.create_rectangle(397, 47, 815, 479, fill="white")
     cell_width = 26
     cell_height = 26
     x_start = 397
     y_start = 47
+    x_end = 823
+    y_end = 486
     x_interval = 2
     y_interval = 3
     tileArray = []  # Список для хранения индексов каждой клетки
-    for row in range(0, 15):
-        tileRow = []
-        for column in  range(0, 15):
-            tileArray.append(tileRow)
-            x1 = x_start + row * (cell_width + x_interval)
-            y1 = y_start + column * (cell_height + y_interval)
+    for i in range(15):
+        for j in range(15):
+            x1 = x_start + i * (cell_width + x_interval)
+            y1 = y_start + j * (cell_height + y_interval)
             x2 = x1 + cell_width
             y2 = y1 + cell_height
             canvas.create_rectangle(x1, y1, x2, y2)
-            tileRow=[]
     # Вычисляем индексы клетки
-            cell_index = (row, column)
+            cell_index = (i, j)
             tileArray.append(cell_index)
 
             if cell_index in [(0,0), (7,0), (14,0), (0,7), (14,7), (0,14), (7,14), (14,14)]:
@@ -255,9 +244,6 @@ def pole():
                 canvas.create_rectangle(x1, y1, x2, y2, fill="#F2E142")
             else:
                 canvas.create_rectangle(x1, y1, x2, y2)
-
-
-
 
 canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(
@@ -308,7 +294,7 @@ button_4 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda:(switch_turn(),toggle_letters()),
+    command=lambda:(toggle_letters_visibility()),
     relief="flat"
 )
 button_4.place(
@@ -583,6 +569,6 @@ for i in range(1, 16):
 change_1()
 change_2()
 pole()
-toggle_letters()
+hide_let()
 window.resizable(False, False)
 window.mainloop()
