@@ -1,24 +1,18 @@
 import random
 from tkinter import messagebox
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, Frame, messagebox
-import tkinter as tk 
-from random import shuffle
+from tkinter import Tk, Canvas, Entry, Button, PhotoImage, messagebox
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets game\frame0")
 
-
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
-
-
 
 window = Tk()
 
 window.geometry("829x613")
 window.configure(bg = "#FFFFFF")
-
 
 
 canvas = Canvas(
@@ -31,8 +25,10 @@ canvas = Canvas(
     relief = "ridge"
 )
 
-original_letters_list = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'э', 'я', 'я']
+existing_words = []
+existing_word_positions = {}
 
+original_letters_list = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'э', 'я', 'я']
 def create_letter_list():
     global letters
     letters = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'э', 'я', 'я']
@@ -51,6 +47,7 @@ def random_letters_2():
     for letter in random_letters:
         original_letters_list.remove(letter)
     return random_letters
+
 
 def change_1():
     white_rect_kv1 = canvas.create_rectangle(13, 550, 363, 600, fill="white")
@@ -76,126 +73,172 @@ def change_2():
 def toggle_letters():
     global letters_1, letters_2
     if toggle_letters.counter % 2 == 0:
-        for tag in canvas.find_withtag("kv_text_2"):
-            canvas.itemconfig(tag, text="")
-        change_1()
-    else:
         for tag in canvas.find_withtag("kv_text_1"):
-            canvas.itemconfig(tag, text="")
+            canvas.itemconfig(tag, text="*")
         change_2()
+        
+    else:
+        for tag in canvas.find_withtag("kv_text_2"):
+            canvas.itemconfig(tag, text="*")
+        change_1()
     toggle_letters.counter += 1
 
-toggle_letters.counter = 0
+toggle_letters.counter = -1
 
 letters_1 = random_letters_1()
 letters_2 = random_letters_2()
 all_letters = letters_1 + letters_2
+    # with open("dic.txt", "r", encoding="utf-8") as file:
+    #     dictionary = set(word.strip().lower() for word in file)
+
+    # if entry_word not in dictionary:
+    #     messagebox.showerror("Ошибка", f"Слова '{entry_word}' нет в словаре!")
+    #     return
+
+# Функция проверки наличия введенных букв в руке пользователя
+def check_letters(entry_word, current_letters):
+    for letter in entry_word:
+        if letter not in current_letters:
+            return False
+    return True
+
 def word():
-    global original_letters_list
-    try:
-        entry_word = entry_1.get().lower()  # Получаем введенное слово и приводим к нижнему регистру
-        start_row_str = entry_2.get()  # Получаем строку начальной строки из поля ввода
-        start_column_str = entry_3.get()  # Получаем строку начального столбца из поля ввода
-        direction = entry_4.get().lower()  # Получаем направление из поля ввода и приводим к нижнему регистру
+    global original_letters_list, letters_1, letters_2, existing_words, existing_word_positions, canvas, entry_1, entry_2, entry_3, entry_4
 
-        # Проверка, что все поля ввода заполнены
-        if "" in [entry_word, start_row_str, start_column_str, direction]:
-            messagebox.showinfo("Предупреждение", "Заполните все поля ввода")
+    existing_letters = {}  # Объявляем переменную existing_letters
+    entry_word_details = {}  # Новый словарь для хранения деталей введенного слова
+
+    entry_word = entry_1.get().lower()  
+    start_row_str = entry_2.get() 
+    start_column_str = entry_3.get() 
+    direction = entry_4.get().lower() 
+
+    if "" in [entry_word, start_row_str, start_column_str, direction]:
+        messagebox.showinfo("Предупреждение", "Заполните все поля ввода")
+        return
+
+    # Проверка, что введены числовые значения в строку и столбец
+    if not (start_row_str.isdigit() and start_column_str.isdigit()):
+        messagebox.showerror("Ошибка", "Строка и столбец должны быть числами!")
+        return
+
+    start_row = int(start_row_str)
+    start_column = int(start_column_str)
+
+    cell_width = 26
+    cell_height = 26
+    x_start = 397
+    y_start = 47
+    x_interval = 2
+    y_interval = 3
+
+    if start_row < 1 or start_row > 15 or start_column < 1 or start_column > 15:
+        messagebox.showerror("Ошибка", "Строка или столбец выходит за допустимые границы!")
+        return
+
+    draw_word = False
+
+    current_letters = letters_1 if toggle_letters.counter % 2 == 0 else letters_2
+
+    if not check_letters(entry_word, current_letters):
+        messagebox.showerror("Ошибка", "В вашей руке нет всех введенных букв!")
+        return
+
+    # Создание словаря для хранения координат и букв слов на поле
+    if existing_words:
+        for word, (row, column) in existing_word_positions.items():
+            for i, letter in enumerate(word):
+                if direction == "вниз":
+                    existing_letters[(row, column + i)] = letter  # Изменили порядок координат
+                elif direction == "вправо":
+                    existing_letters[(row + i, column)] = letter  # Изменили порядок координат
+
+    print("existing_letters:", existing_letters)  # Отладочный вывод
+
+    # Заполнение словаря entry_word_details
+    def wotd_details():
+            for i, letter in enumerate(entry_word):
+                if direction == "вправо":
+                    row = start_row 
+                    column = start_column + i
+                elif direction == "вниз":
+                    column = start_column
+                    row = start_row + i
+                entry_word_details[(row, column)] = letter
+    wotd_details()
+    print(entry_word_details)
+    # Проверка наличия совпадающих букв и их координат
+    if existing_letters:
+        if any((row, column) in existing_letters and existing_letters[(row, column)] == letter for (row, column), letter in entry_word_details.items()):
+            draw_word = True
+        else:
+            messagebox.showerror("Ошибка", "Ни одна из букв нового слова не совпадает с буквами на поле или у вас отсутствуют буквы, введенные в слове!")
+            return
+    else:
+        draw_word = True
+
+    # Проверка выхода слова за границы поля
+    if direction == "вниз":  
+        if start_row + len(entry_word) - 1 > 15:
+            messagebox.showerror("Ошибка", f"Слово '{entry_word}' выходит за пределы поля!")
+            return
+    elif direction == "вправо":
+        if start_column + len(entry_word) - 1 > 15:
+            messagebox.showerror("Ошибка", f"Слово '{entry_word}' выходит за пределы поля!")
             return
 
-        # Преобразование начальной строки и столбца в целые числа
-        start_row = int(start_row_str)
-        start_column = int(start_column_str)
-
-        # Проверка, находится ли начальная строка и столбец в допустимом диапазоне от 1 до 15
-        if start_row < 1 or start_row > 15 or start_column < 1 or start_column > 15:
-            messagebox.showerror("Ошибка", "Строка или столбец выходит за допустимые границы!")
+# Проверяем, является ли текущее слово первым на поле и проходит ли оно через центральную клетку
+    if not existing_words:
+        if (8, 8) not in entry_word_details:
+            messagebox.showerror("Ошибка", "Первое слово должно проходить через центральную клетку")
             return
-        with open("dic.txt", "r", encoding="utf-8") as file:
-            dictionary = set(word.strip().lower() for word in file)
 
-        # Проверка, существует ли введенное слово в словаре
-        if entry_word not in dictionary:
-            messagebox.showerror("Ошибка", f"Слова '{entry_word}' нет в словаре!")
-            return
-        cell_width = 26
-        cell_height = 26
-        x_start = 397
-        y_start = 47
-        x_interval = 2
-        y_interval = 3
+    current_letters = letters_1 if toggle_letters.counter % 2 == 0 else letters_2
+    for letter in entry_word:
+        current_letters.remove(letter) 
+        new_letter = random.choice(original_letters_list)
+        original_letters_list.remove(new_letter)
+        current_letters.append(new_letter)
+    current_letters = letters_1 if toggle_letters.counter % 2 == 0 else letters_2
 
-        draw_word = True  # Переменная-флаг для определения, нужно ли рисовать слово
+    current_letters[:] = [letter for letter in current_letters if letter is not None]
 
-        # Проверяем, что каждая буква из введенного слова присутствует в списке всех букв
-        current_letters = letters_1 if is_player_1_turn else letters_2
-        for letter in entry_word:
-            if letter not in current_letters:
-                messagebox.showerror("Ошибка", f"Буквы '{letter}' нет в поле!")
-                draw_word = False
-                break
+    # Добавление слова в список существующих слов и его позиции
+    existing_words.append(entry_word)
+    existing_word_positions[entry_word] = (int(entry_2.get()), int(entry_3.get()))
 
-        for letter in entry_word:
-            if direction == "вниз":
-                if start_row + entry_word.index(letter) > 15:
-                    messagebox.showerror("Ошибка", f"Слово '{entry_word}' выходит за пределы поля!")
-                    draw_word = False
-                    break
-            elif direction == "вправо":
-                if start_column + entry_word.index(letter) > 15:
-                    messagebox.showerror("Ошибка", f"Слово '{entry_word}' выходит за пределы поля!")
-                    draw_word = False
-                    break
-        word_ids = []
-        if draw_word:
-            current_letters = letters_1 if is_player_1_turn else letters_2
+    if draw_word:  # Добавлено условие для вывода слова на поле
+        if direction == "вниз":  
+            x1 = x_start + (int(entry_3.get()) - 1) * (cell_width + x_interval) + cell_width / 2
+            y1 = y_start + (int(entry_2.get()) - 1) * (cell_height + y_interval) + cell_height
+            x_increment = 0
+            y_increment = (cell_height + y_interval)
+
             for letter in entry_word:
-                current_letters.remove(letter) 
-                new_letter = random.choice(original_letters_list)
-                original_letters_list.remove(new_letter)
-                current_letters.append(new_letter)
-            current_letters = letters_1 if is_player_1_turn else letters_2
+                if y1 + cell_height > y_start + 16 * (cell_height + y_interval):  
+                    messagebox.showerror("Ошибка", "Слово выходит за рамки!")
+                    return
+                text_id = canvas.create_text(x1, y1 - cell_height / 2, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
+                y1 += y_increment
 
-            # Удаление использованных букв из списка
-            current_letters[:] = [letter for letter in current_letters if letter is not None]
+        elif direction == "вправо":
+            x1 = x_start + (int(entry_3.get()) - 1) * (cell_width + x_interval)
+            y1 = y_start + (int(entry_2.get()) - 1) * (cell_height + y_interval) + cell_height / 2
+            x_increment = cell_width + x_interval
+            y_increment = 0
+        
+            for letter in entry_word:
+                if x1 + cell_width > x_start + 15 * (cell_width + x_interval): 
+                    messagebox.showerror("Ошибка", "Слово выходит за рамки!")
+                    return
+                text_id = canvas.create_text(x1 + cell_width / 2, y1, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
+                x1 += x_increment
 
-            if direction == "вниз":  
-                x1 = x_start + (start_column - 1) * (cell_width + x_interval) + cell_width / 2
-                y1 = y_start + (start_row - 1) * (cell_height + y_interval) + cell_height
-                x_increment = 0
-                y_increment = (cell_height + y_interval)
-                
-                for letter in entry_word:
-                    if y1 + cell_height > y_start + 16 * (cell_height + y_interval):  # Проверяем, не выходит ли текущая буква за рамки матрицы по вертикали
-                        messagebox.showerror("Ошибка", "Слово выходит за рамки!")
-                        
-                        canvas.delete(word_ids[-1],word_ids[-2],word_ids[-3],word_ids[-4],word_ids[-5],word_ids[-6],word_ids[-7])
-                        return
-                    text_id = canvas.create_text(x1, y1 - cell_height / 2, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
-                    word_ids.append(text_id)
-                    y1 += y_increment
-                    
-            elif direction == "вправо":
-                x1 = x_start + (start_column - 1) * (cell_width + x_interval)
-                y1 = y_start + (start_row - 1) * (cell_height + y_interval) + cell_height / 2
-                x_increment = cell_width + x_interval
-                y_increment = 0
-            
-                for letter in entry_word:
-                    if x1 + cell_width > x_start + 15 * (cell_width + x_interval):  # Проверяем, не выходит ли текущая буква за рамки матрицы по горизонтали
-                        messagebox.showerror("Ошибка", "Слово выходит за рамки!")
-
-                        canvas.delete(word_ids[-1],word_ids[-2],word_ids[-3],word_ids[-4],word_ids[-5],word_ids[-6],word_ids[-7])
-                        return
-                    text_id = canvas.create_text(x1 + cell_width / 2, y1, anchor="center", text=letter, fill="#000000", font=("Kanit Regular", 16 * -1))
-                    word_ids.append(text_id)
-                    x1 += x_increment
-    except: 
-        messagebox.showerror("Ошибка", "Введите цифру!")
-
+    # Вывод деталей введенного слова в новом словаре
+    print("entry_word_details:", entry_word_details)
+    
 is_player_1_turn = True
 
-# Функция для смены хода между игроками
 def switch_turn():
     global is_player_1_turn
     is_player_1_turn = not is_player_1_turn
@@ -208,7 +251,7 @@ def pole():
     y_start = 47
     x_interval = 2
     y_interval = 3
-    tileArray = []  # Список для хранения индексов каждой клетки
+    tileArray = []  
     for row in range(0, 15):
         tileRow = []
         for column in  range(0, 15):
@@ -236,6 +279,11 @@ def pole():
             else:
                 canvas.create_rectangle(x1, y1, x2, y2)
 
+def clean_entry():
+    entry_1.delete(0, "end")
+    entry_2.delete(0, "end")
+    entry_3.delete(0, "end")
+    entry_4.delete(0, "end")
 
 canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(
@@ -286,7 +334,7 @@ button_4 = Button(
     image=button_image_1,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda:(switch_turn(),toggle_letters()),
+    command=lambda:(switch_turn(),toggle_letters(), clean_entry()),
     relief="flat"
 )
 button_4.place(
@@ -301,7 +349,7 @@ canvas.create_rectangle(
     30.0,
     163.0,
     67.0,
-    fill="#F2E142",
+    fill="#E6EA13",
     outline="")
 
 canvas.create_rectangle(
@@ -309,7 +357,7 @@ canvas.create_rectangle(
     80.0,
     163.0,
     117.0,
-    fill="#F2E142",
+    fill="#E6EA13",
     outline="")
 
 canvas.create_rectangle(
@@ -317,7 +365,7 @@ canvas.create_rectangle(
     29.0,
     226.0,
     66.0,
-    fill="#F2E142",
+    fill="#E6EA13",
     outline="")
 
 canvas.create_rectangle(
@@ -325,7 +373,7 @@ canvas.create_rectangle(
     80.0,
     226.0,
     117.0,
-    fill="#F2E142",
+    fill="#E6EA13",
     outline="")
 
 canvas.create_text(
@@ -525,7 +573,7 @@ button_7 = Button(
     window,
     text="Завершить игру",
     bg="#FFFF00",  
-    fg="#000000",  
+    fg="#000000", 
     font=("Inter Bold", 10),  
     command=window.quit  
 )
@@ -556,10 +604,10 @@ for i in range(1, 16):
     x = x_start_chisla_stolb
     y = y_start_chisla_stolb + (i - 1) * interval_chisla_stolb
     canvas.create_text(x, y, text=str(i), font=text_font)
-
 change_1()
 change_2()
 pole()
 toggle_letters()
+print(toggle_letters.counter)
 window.resizable(False, False)
 window.mainloop()
