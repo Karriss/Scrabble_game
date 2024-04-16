@@ -2,6 +2,7 @@ import random
 from tkinter import messagebox
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Button, PhotoImage, messagebox
+from random import shuffle
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"assets game\frame0")
@@ -28,26 +29,34 @@ canvas = Canvas(
 existing_words = []
 existing_word_positions = {}
 
-original_letters_list = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'э', 'я', 'я']
+
+glas = ['а','а','а','а','а','а','а','а', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'и', 'и', 'и', 'и', 'и', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'у', 'у', 'у', 'у', 'ы', 'ы', 'э', 'ю', 'я', 'я']
+soglas = ['б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'ж', 'з', 'з', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'ф', 'х', 'ч', 'ш', 'щ', 'ъ', 'ь', 'ь']
+original_letters_list = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'ь', 'ь','э', 'ю', 'я', 'я']
 def create_letter_list():
     global letters
-    letters = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'э', 'я', 'я']
+    letters = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'ь', 'ь','э', 'ю', 'я', 'я']
     return letters
 
 def random_letters_1():
     global original_letters_list
-    random_letters = random.sample(original_letters_list, 7)
+    vowels = random.sample(glas, 3)
+    consonants = random.sample(soglas, 4)
+    random_letters = vowels + consonants
+    random.shuffle(random_letters)
     for letter in random_letters:
         original_letters_list.remove(letter)
     return random_letters
 
 def random_letters_2():
     global original_letters_list
-    random_letters = random.sample(original_letters_list, 7)
+    vowels = random.sample(glas, 3)
+    consonants = random.sample(soglas, 4)
+    random_letters = vowels + consonants
+    random.shuffle(random_letters)
     for letter in random_letters:
         original_letters_list.remove(letter)
     return random_letters
-
 
 def change_1():
     white_rect_kv1 = canvas.create_rectangle(13, 550, 363, 600, fill="white")
@@ -116,6 +125,10 @@ def word():
     if "" in [entry_word, start_row_str, start_column_str, direction]:
         messagebox.showinfo("Предупреждение", "Заполните все поля ввода")
         return
+    
+    if direction not in ["вправо", "вниз"]:
+        messagebox.showerror("Ошибка", "Введите направление 'вправо' или 'вниз'!")
+        return
 
     # Проверка, что введены числовые значения в строку и столбец
     if not (start_row_str.isdigit() and start_column_str.isdigit()):
@@ -153,7 +166,7 @@ def word():
                 elif direction == "вправо":
                     existing_letters[(row + i, column)] = letter  # Изменили порядок координат
 
-    print("existing_letters:", existing_letters)  # Отладочный вывод
+    print("existing_letters:", existing_letters)  
 
     # Заполнение словаря entry_word_details
     def wotd_details():
@@ -166,7 +179,7 @@ def word():
                     row = start_row + i
                 entry_word_details[(row, column)] = letter
     wotd_details()
-    print(entry_word_details)
+    
     # Проверка наличия совпадающих букв и их координат
     if existing_letters:
         if any((row, column) in existing_letters and existing_letters[(row, column)] == letter for (row, column), letter in entry_word_details.items()):
@@ -191,8 +204,15 @@ def word():
     if not existing_words:
         if (8, 8) not in entry_word_details:
             messagebox.showerror("Ошибка", "Первое слово должно проходить через центральную клетку")
-            return
+            return # Возвращаемся из функции, не добавляя слово в словарь
+        
+    # Добавление слова в список существующих слов и его позиции
+    existing_words.append(entry_word)
+    existing_word_positions[entry_word] = (start_row, start_column)
 
+    # Вывод деталей введенного слова в новом словаре
+    print("entry_word_details:", entry_word_details)        
+        
     current_letters = letters_1 if toggle_letters.counter % 2 == 0 else letters_2
     for letter in entry_word:
         current_letters.remove(letter) 
@@ -236,6 +256,8 @@ def word():
 
     # Вывод деталей введенного слова в новом словаре
     print("entry_word_details:", entry_word_details)
+    
+
     
 is_player_1_turn = True
 
@@ -284,6 +306,17 @@ def clean_entry():
     entry_2.delete(0, "end")
     entry_3.delete(0, "end")
     entry_4.delete(0, "end")
+
+def end_game():
+    # добавить код для определения победителя
+    winner = "Игрок 1"  # Заменить это на код для определения победителя
+
+    # Отображаем сообщение о победителе
+    messagebox.showinfo("Победитель", f"Победил {winner}!") # со счетом...
+    window.destroy()
+
+def show_message():
+    messagebox.showinfo("Подсказка", "Чтобы задать направление введите 'вправо' или 'влево'")
 
 canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(
@@ -575,13 +608,28 @@ button_7 = Button(
     bg="#FFFF00",  
     fg="#000000", 
     font=("Inter Bold", 10),  
-    command=window.quit  
+    command=lambda:(window.quit, end_game()),
 )
 button_7.place(
     x=240,  
     y=33,   
     width=115,  
     height=40   
+)
+
+button_8 = Button(
+    window,
+    text="Подсказка",
+    bg="#3FC86E",  
+    fg="#000000", 
+    font=("Inter Bold", 12),  
+    command=show_message,
+)
+button_8.place(
+    x=17,  
+    y=411,   
+    width=110,  
+    height=40 
 )
 
 # Рисуем цифры на столбцы и строки
@@ -604,6 +652,8 @@ for i in range(1, 16):
     x = x_start_chisla_stolb
     y = y_start_chisla_stolb + (i - 1) * interval_chisla_stolb
     canvas.create_text(x, y, text=str(i), font=text_font)
+
+
 change_1()
 change_2()
 pole()
