@@ -92,8 +92,7 @@ button_2 = Button(
     command=close_and_open_window_game,
     relief="flat"
 )
-button_2.place(
-    x=125.0,
+button_2.place(    x=125.0,
     y=205.0,
     width=304.0,
     height=47.0
