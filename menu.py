@@ -55,38 +55,19 @@ image_8 = canvas.create_image(366.0,80.00000000000006,image=image_image_8)
 def open_game():
     subprocess.Popen(['python','game.py'])
 
-button_image_1 = PhotoImage(
-    file=relative_to_assets("button_1.png"))
-button_1 = Button(
-    image=button_image_1,
-    borderwidth=0,
-    highlightthickness=0,
-    command=close_and_open_window_rules,
-    relief="flat"
-)
+button_image_1 = PhotoImage(file=relative_to_assets("button_1.png"))
+button_1 = Button(image=button_image_1,borderwidth=0,highlightthickness=0,command=close_and_open_window_rules,relief="flat")
 button_1.place(x=188.0,y=291.00000000000006,width=356.0,height=61.0)
 
 def open_rules():
     subprocess.Popen(['python','rules.py'])
 
 button_image_2 = PhotoImage(file=relative_to_assets("button_2.png"))
-button_2 = Button(
-    image=button_image_2,
-    borderwidth=0,
-    highlightthickness=0,
-    command=close_and_open_window_game,
-    relief="flat"
-)
+button_2 = Button(image=button_image_2,borderwidth=0,highlightthickness=0,command=close_and_open_window_game,relief="flat")
 button_2.place(x=204.0,y=218.00000000000006,width=320.0,height=63.0)
 
-button_image_3 = PhotoImage(
-    file=relative_to_assets("button_3.png"))
-button_3 = Button(
-    image=button_image_3,
-    borderwidth=0,
-    highlightthickness=0,
-    command=close_window,
-    relief="flat")
+button_image_3 = PhotoImage(file=relative_to_assets("button_3.png"))
+button_3 = Button(image=button_image_3,borderwidth=0,highlightthickness=0,command=close_window,relief="flat")
 
 button_3.place(x=211.0,y=364.00000000000006,width=313.0,height=52.0)
 window.resizable(False, False)

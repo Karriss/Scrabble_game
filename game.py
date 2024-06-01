@@ -5,7 +5,7 @@ from tkinter import Tk, Canvas, Entry, Button, PhotoImage, messagebox
 from random import shuffle
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH = Path(r".\assets game\frame0")
+ASSETS_PATH = Path(r"assets game\frame0")
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -25,7 +25,6 @@ canvas = Canvas(
     highlightthickness = 0,
     relief = "ridge"
 )
-
 used_this_turn = False
 existing_words = []
 existing_letters = {}
@@ -368,13 +367,14 @@ def zaverch_hod():
         pass
     else:
         count_skipped_move += 1
-        if count_skipped_move == 4:
-            end_game()
         fill_new_letters(letters_1)
         fill_new_letters(letters_2)
         toggle_letters()
         clean_entry()
-        used_this_turn = False  
+        used_this_turn = False
+        if count_skipped_move == 4:
+            end_game()  
+
 
 canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(file=relative_to_assets("image_1.png"))
@@ -453,6 +453,7 @@ def write_new_letters():
         letters_2 = random_letters()
         write_letters_player2()
     used_this_turn = True
+
 
 button_9 = Button(window,text="Смена букв",bg="#19C6D1",  fg="#000000", font=("Inter Bold", 12),  command=write_new_letters)
 button_9.place(x=183,  y=364,   width=160,  height=30)
