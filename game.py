@@ -104,7 +104,7 @@ def word():
     
     current_letters = letters_1 if toggle_letters.counter % 2 == 0 else letters_2
 
-    with open("dic.txt", "r", encoding="utf-8") as file:
+    with open("russian.txt", "r", encoding="utf-8") as file:
         dictionary = set(word.strip().lower() for word in file)
 
     entry_word = entry_1.get().lower()  
