@@ -1,9 +1,9 @@
 import random
 from tkinter import messagebox
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Button, PhotoImage, messagebox
+from tkinter import Tk, Canvas, Entry, Button, PhotoImage, messagebox,Label
 import re
-
+import subprocess
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = Path(r"assets game\frame0")
 
@@ -32,7 +32,6 @@ count_skipped_move = 0
 glas = ['а','а','а','а','а','а','а','а', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'и', 'и', 'и', 'и', 'и', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'у', 'у', 'у', 'у', 'ы', 'ы', 'э', 'ю', 'я', 'я']
 soglas = ['б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'ж', 'з', 'з', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'ф', 'х', 'ч', 'ш', 'щ', 'ъ', 'ь', 'ь']
 original_letters_list = ['а','а','а','а','а','а','а','а','б', 'б', 'в', 'в', 'в', 'в', 'г', 'г', 'д', 'д', 'д', 'д', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'е', 'ж', 'з', 'з', 'и', 'и', 'и', 'и', 'и', 'й', 'к', 'к', 'к', 'к', 'л', 'л', 'л', 'л', 'м', 'м', 'м', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'н', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'о', 'п', 'п', 'п', 'п', 'р', 'р', 'р', 'р', 'р', 'с', 'с', 'с', 'с', 'с', 'т', 'т', 'т', 'т', 'у', 'у', 'у', 'у', 'ф', 'х', 'ч', 'ш', 'щ', 'ы', 'ы', 'ъ', 'ь', 'ь','э', 'ю', 'я', 'я']
-
 
 def random_letters():
     vowels = random.sample(glas, 3)
@@ -99,6 +98,7 @@ def word():
     global original_letters_list, letters_1, letters_2, existing_words, canvas, entry_1, entry_2, entry_3, entry_4, existing_letters, count_skipped_move
 
     entry_word_details = {}
+    
     current_letters = letters_1 if toggle_letters.counter % 2 == 0 else letters_2
 
     with open("russian.txt", "r", encoding="utf-8") as file:
@@ -134,7 +134,7 @@ def word():
         messagebox.showerror("Ошибка", "Введите направление 'вправо' или 'вниз'!")
         return
     if not (start_row_str.isdigit() and start_column_str.isdigit()):
-        messagebox.showerror("Ошибка", "Строка и столбец должны быть целыми числами!")
+        messagebox.showerror("Ошибка", "Строка и столбец должны быть числами!")
         return
     
     if not check_letters(entry_word, current_letters):
@@ -154,6 +154,9 @@ def word():
     if start_row < 1 or start_row > 15 or start_column < 1 or start_column > 15:
         messagebox.showerror("Ошибка", "Строка или столбец выходит за допустимые границы!")
         return
+    # if not check_letters(entry_word, current_letters):
+    #     messagebox.showerror("Ошибка", "В вашей руке нет всех введенных букв!")
+    #     return
     
     # Проверка выхода слова за границы поля
     if direction == "вниз":  
@@ -279,7 +282,10 @@ def pole():
 
 score_player1 = 0
 score_player2 = 0
-
+count_label = Label(window, text=(score_player1), bg="#E6EA13", fg="#000000", font=("Helvetica", 16))
+count_label.place(x=180, y=33)
+count_label = Label(window, text=(score_player2), bg="#E6EA13", fg="#000000", font=("Helvetica", 16))
+count_label.place(x=180, y=85)
 def calculateScore(word, row, col, direction):
     global score_player1, score_player2
     # синий
@@ -334,34 +340,22 @@ def calculateScore(word, row, col, direction):
             score_player1 += 15
         canvas.create_rectangle(177.0,29.0,226.0,66.0,fill="#E6EA13",outline="")
         score_player1 += score
-        canvas.create_text(188.0, 36.0, anchor="nw", text=str(score_player1), fill="#000000", font=("Kanit Regular", 16))
+        count_label.config(text=score_player1)
     elif toggle_letters.counter % 2 == 1:
         if len(letters_2)==0:
             score_player2 += 15
         canvas.create_rectangle(177,80,226,117.0,fill="#E6EA13",outline="")
         score_player2 += score
-        canvas.create_text(188.0, 86.0, anchor="nw", text=str(score_player2), fill="#000000", font=("Kanit Regular", 16))
+        count_label.config(text=score_player2)
     else:
         raise ValueError("Неверный игрок")
+
 
 def clean_entry():
     entry_1.delete(0, "end")
     entry_2.delete(0, "end")
     entry_3.delete(0, "end")
     entry_4.delete(0, "end")
-
-def end_game():
-    global score_player1, score_player2
-    if score_player1 > score_player2:
-        messagebox.showinfo("Победитель", f"Победил Игрок 1 со счетом: {score_player1}:{score_player2}!") 
-        window.destroy()
-    elif score_player1 < score_player2:
-        messagebox.showinfo("Победитель", f"Победил Игрок 2 со счетом: {score_player2}:{score_player1}!") 
-        window.destroy()
-    else:
-        messagebox.showinfo("Победитель", f"Ничья со счетом {score_player1}:{score_player2}!") 
-        window.destroy()
-
 
 def show_message():
     messagebox.showinfo("Подсказка", "Чтобы задать направление введите 'вправо' или 'влево'")
@@ -380,9 +374,21 @@ def zaverch_hod():
         clean_entry()
         used_this_turn = False
         if count_skipped_move == 4:
-            end_game()  
+            close_and_open_window_menu()  
 
-
+def close_and_open_window_menu():
+    global score_player1, score_player2
+    if score_player1 > score_player2:
+        messagebox.showinfo("Победитель", f"Победил Игрок 1 со счетом: {score_player1}:{score_player2}!") 
+        window.destroy()
+    elif score_player1 < score_player2:
+        messagebox.showinfo("Победитель", f"Победил Игрок 2 со счетом: {score_player2}:{score_player1}!") 
+        window.destroy()
+    else:
+        messagebox.showinfo("Победитель", f"Ничья со счетом {score_player1}:{score_player2}!") 
+        window.destroy()
+    subprocess.Popen(['python','menu.py'])
+    
 canvas.place(x = 0, y = 0)
 image_image_1 = PhotoImage(file=relative_to_assets("image_1.png"))
 image_1 = canvas.create_image(414.0,306.0,image=image_image_1)
@@ -435,7 +441,7 @@ button_image_2 = PhotoImage(file=relative_to_assets("button_5.png"))
 button_5 = Button(image=button_image_2,borderwidth=0,highlightthickness=0,command=word,relief="flat")
 button_5.place(x=13.0,y=364.0,width=160.0,height=30.0)
 
-button_7 = Button(window,text="Завершить игру",bg="#FFFF00",  fg="#000000", font=("Inter Bold", 10),  command=lambda:(window.quit, end_game()))
+button_7 = Button(window,text="Завершить игру",bg="#FFFF00",  fg="#000000", font=("Inter Bold", 10),  command=lambda:(window.quit, close_and_open_window_menu()))
 button_7.place(x=240,  y=33,   width=115,  height=40)
 
 button_8 = Button(window,text="Подсказка",bg="#3FC86E",  fg="#000000", font=("Inter Bold", 12),command=show_message)
