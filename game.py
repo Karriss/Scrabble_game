@@ -11,10 +11,8 @@ def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
 window = Tk()
-
 window.geometry("829x613")
 window.configure(bg = "#FFFFFF")
-
 
 canvas = Canvas(
     window,
@@ -101,7 +99,6 @@ def word():
     global original_letters_list, letters_1, letters_2, existing_words, canvas, entry_1, entry_2, entry_3, entry_4, existing_letters, count_skipped_move
 
     entry_word_details = {}
-    
     current_letters = letters_1 if toggle_letters.counter % 2 == 0 else letters_2
 
     with open("russian.txt", "r", encoding="utf-8") as file:
@@ -137,7 +134,7 @@ def word():
         messagebox.showerror("Ошибка", "Введите направление 'вправо' или 'вниз'!")
         return
     if not (start_row_str.isdigit() and start_column_str.isdigit()):
-        messagebox.showerror("Ошибка", "Строка и столбец должны быть числами!")
+        messagebox.showerror("Ошибка", "Строка и столбец должны быть целыми числами!")
         return
     
     if not check_letters(entry_word, current_letters):
@@ -157,9 +154,6 @@ def word():
     if start_row < 1 or start_row > 15 or start_column < 1 or start_column > 15:
         messagebox.showerror("Ошибка", "Строка или столбец выходит за допустимые границы!")
         return
-    # if not check_letters(entry_word, current_letters):
-    #     messagebox.showerror("Ошибка", "В вашей руке нет всех введенных букв!")
-    #     return
     
     # Проверка выхода слова за границы поля
     if direction == "вниз":  
@@ -350,13 +344,11 @@ def calculateScore(word, row, col, direction):
     else:
         raise ValueError("Неверный игрок")
 
-
 def clean_entry():
     entry_1.delete(0, "end")
     entry_2.delete(0, "end")
     entry_3.delete(0, "end")
     entry_4.delete(0, "end")
-
 
 def end_game():
     global score_player1, score_player2
