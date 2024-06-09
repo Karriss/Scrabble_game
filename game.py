@@ -2,7 +2,7 @@ import random
 from tkinter import messagebox
 from pathlib import Path
 from tkinter import Tk, Canvas, Entry, Button, PhotoImage, messagebox
-from random import shuffle
+import re
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = Path(r"assets game\frame0")
@@ -123,12 +123,27 @@ def word():
         messagebox.showinfo("Предупреждение", "Заполните все поля ввода")
         return
     
+    # Проверка на наличие только букв
+    if not entry_word.isalpha():
+        messagebox.showerror("Ошибка", "Слово должно содержать только буквы!")
+        return
+    
+    # Проверка на наличие только русских букв
+    if not re.match(r'^[А-Яа-яЁё]+$', entry_word):
+        messagebox.showerror("Ошибка", "Слово должно содержать только русские буквы!")
+        return
+
     if direction not in ["вправо", "вниз"]:
         messagebox.showerror("Ошибка", "Введите направление 'вправо' или 'вниз'!")
         return
     if not (start_row_str.isdigit() and start_column_str.isdigit()):
         messagebox.showerror("Ошибка", "Строка и столбец должны быть числами!")
         return
+    
+    if not check_letters(entry_word, current_letters):
+        messagebox.showerror("Ошибка", "В вашей руке нет всех введенных букв!")
+        return
+    
     if entry_word not in dictionary:
         messagebox.showerror("Ошибка", f"Слова '{entry_word}' нет в словаре!")
         return
@@ -142,9 +157,9 @@ def word():
     if start_row < 1 or start_row > 15 or start_column < 1 or start_column > 15:
         messagebox.showerror("Ошибка", "Строка или столбец выходит за допустимые границы!")
         return
-    if not check_letters(entry_word, current_letters):
-        messagebox.showerror("Ошибка", "В вашей руке нет всех введенных букв!")
-        return
+    # if not check_letters(entry_word, current_letters):
+    #     messagebox.showerror("Ошибка", "В вашей руке нет всех введенных букв!")
+    #     return
     
     # Проверка выхода слова за границы поля
     if direction == "вниз":  
