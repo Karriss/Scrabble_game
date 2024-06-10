@@ -282,10 +282,10 @@ def pole():
 
 score_player1 = 0
 score_player2 = 0
-count_label = Label(window, text=(score_player1), bg="#E6EA13", fg="#000000", font=("Helvetica", 16))
-count_label.place(x=180, y=33)
-count_label = Label(window, text=(score_player2), bg="#E6EA13", fg="#000000", font=("Helvetica", 16))
-count_label.place(x=180, y=85)
+count_label_1 = Label(window, text=(score_player1), bg="#E6EA13", fg="#000000", font=("Helvetica", 16))
+count_label_1.place(x=180, y=33)
+count_label_2 = Label(window, text=(score_player2), bg="#E6EA13", fg="#000000", font=("Helvetica", 16))
+count_label_2.place(x=180, y=85)
 def calculateScore(word, row, col, direction):
     global score_player1, score_player2
     # синий
@@ -340,13 +340,13 @@ def calculateScore(word, row, col, direction):
             score_player1 += 15
         canvas.create_rectangle(177.0,29.0,226.0,66.0,fill="#E6EA13",outline="")
         score_player1 += score
-        count_label.config(text=score_player1)
+        count_label_1.config(text=score_player1)
     elif toggle_letters.counter % 2 == 1:
         if len(letters_2)==0:
             score_player2 += 15
         canvas.create_rectangle(177,80,226,117.0,fill="#E6EA13",outline="")
         score_player2 += score
-        count_label.config(text=score_player2)
+        count_label_2.config(text=score_player2)
     else:
         raise ValueError("Неверный игрок")
 
